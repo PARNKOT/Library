@@ -1,0 +1,22 @@
+- SELECT * FROM <table>;                                     (выбрать все)
+
+- SELECT <column_name>, <column_name>,... FROM <table>;      (выбрать столбцы)
+
+- SELECT DISTINCT <column_name>, <column_name> FROM <table>; (выбрать уникальные)
+
+- SELECT COUNT(<column name>) FROM <table>; (посчитать количество всех строк)
+- SELECT COUNT(DISTINCT <column name>) FROM <table>; (посчитать количество уникальных значений)
+
+- CREATE TABLE <table>
+  (
+    <var name> int PRIMARY KEY,
+    <var name> integer,
+    <var name> varchar(64) NOT NULL,
+    <var name> text NOT NULL
+  );
+
+- INSERT INTO <table> VALUES
+  (<valeu for column 1>, <valeu for column 2>, ..., <valeu for column n>),
+  (<valeu for column 1>, <valeu for column 2>, ..., <valeu for column n>),
+  ...;
+
