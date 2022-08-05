@@ -7,6 +7,9 @@
 - SELECT COUNT(<column name>) FROM <table>; (посчитать количество всех строк)
 - SELECT COUNT(DISTINCT <column name>) FROM <table>; (посчитать количество уникальных значений)
 
+- SELECT * FROM <table> WHERE {column} > (<, >=, <=) some_value AND (or) ...;
+- SELECT * FROM <table> WHERE {column} BETWEEN <left_border> AND <right_border>;
+
 - CREATE TABLE <table>
   (
     <var name> int PRIMARY KEY,
@@ -19,4 +22,5 @@
   (<valeu for column 1>, <valeu for column 2>, ..., <valeu for column n>),
   (<valeu for column 1>, <valeu for column 2>, ..., <valeu for column n>),
   ...;
+  
 
