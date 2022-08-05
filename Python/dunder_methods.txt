@@ -56,12 +56,46 @@ __<name>__(self,...)
   Для отображения информации об объекте класса в режиме отладки (для разработчиков)
   
 10) Группа методов для выполнения математических операций
-  def __add__()     - сложение
-  def __sub__()     - вычитание
-  def __mul__()     - умножение
-  def __truediv__() - деление
+  def __add__(self, other)       - сложение
+  def __sub__(self, other)       - вычитание
+  def __mul__(self, other)       - умножение
+  def __truediv__(self, other)   - деление (/)
+  def __floordiv__(self, other)  - целочисленное деление (//)
+  def __mod__(self, other)       - остаток от деления (%)
   
   Существуют аналоги для правых операндов и операций типа +=
   def __radd__()  ->  c = 100 + c1
   def __iadd__()  ->  c += 100
+  
+11) Группа метождов для выполнения логических операций
+  def __eq__(self, other)   -   ==
+  def __ne__(self, other)   -   !=
+  def __lt__(self, other)   -   <
+  def __le__(self, other)   -   <=
+  def __gt__(self, other)   -   >
+  def __ge__(self, other)   -   >=
+
+12) def __hash__(self)
+  Используется для вычисления хэша. Вызывается встроенной функцией hash(<object>)
+  
+13) def __len__()
+  Реализация вычисления условной длины класса. Вызывается встроенной функцией len() либо при определении истинности класса, если в нем отсутствует         __bool__()
+  
+14) def __bool__()
+  Вызывается при проверке истинности класса. Например в if, while
+  
+15) Методы __getitem__(), __setitem__, __delitem__()
+  Реализация скобок []
+
+  15.1) def __getitem__(self, item)
+    c = Counter()
+    print(c[item])
+   
+  15.2) def __setitem__(self, key, value)
+    c = Counter
+    c[key] = value
+    
+  15.3) def __delitem__(self, key)
+    c = Counter
+    del c[key]
   
