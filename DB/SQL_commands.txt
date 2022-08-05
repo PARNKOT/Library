@@ -20,6 +20,11 @@ date format = 'year-month-day' (ISO), example: 1998-05-14
 - SELECT AVG(unit_price) FROM products WHERE discontinued != 1; (AVG, вычисляем среднее)
 - SELECT SUM(units_in_stock) FROM products WHERE discontinued != 1; (SUM, вычисляем сумму)
 
+- SELECT last_name, first_name FROM employees WHERE first_name LIKE '%n'; (LIKE, ищем в соответствии с шаблоном)
+  (В шаблоне могут применяться любые символы.
+   '%' - любые символы 0 и более раз (как * в regex)
+   '_' - любые символы строго один раз)
+
 - CREATE TABLE <table>
   (
     <var name> int PRIMARY KEY,
