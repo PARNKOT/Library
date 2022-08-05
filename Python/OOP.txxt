@@ -1,0 +1,24 @@
+В основе ООП лежат классы и взаимодействия между ними.
+
+class <Name>(parent class1, parent class2, ...):
+  ...
+  def <func>(self, ...):
+    ...
+    
+
+self - ссылка на экземпляр класса
+
+
+class <Name>:
+  class_attributes  # Атрибут принадлежит классу. Можно обращаться через название класса <Name>.class_attributes
+  
+  def <func1>(self, ...):
+    self.instance_attribute # Атрибут создается в экземпляре класса
+
+  @classmethod
+  def <func2>(cls,...):
+    ...
+    
+  @staticmethod
+  def <func3>(...):
+    ...
