@@ -17,6 +17,8 @@ date format = 'year-month-day' (ISO), example: 1998-05-14
 - SELECT DISTINCT country FROM customers WHERE ... ORDER BY country ASC; (ASC/DESC) - сортировка по возрастанию/убыванию
 
 - SELECT MIN(order_date) FROM orders WHERE ship_city = 'London'; (MIN/MAX, находим минимум/максимум)
+- SELECT AVG(unit_price) FROM products WHERE discontinued != 1; (AVG, вычисляем среднее)
+- SELECT SUM(units_in_stock) FROM products WHERE discontinued != 1; (SUM, вычисляем сумму)
 
 - CREATE TABLE <table>
   (
