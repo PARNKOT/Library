@@ -1,2 +1,2 @@
 # Library
-Help materials by all passed themes&lt; courses and so on
+Help materials by all passed themes, courses and so on
