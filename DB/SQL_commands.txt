@@ -1,3 +1,5 @@
+date format = 'year-month-day' (ISO), example: 1998-05-14
+
 - SELECT * FROM <table>;                                     (выбрать все)
 
 - SELECT <column_name>, <column_name>,... FROM <table>;      (выбрать столбцы)
