@@ -1,0 +1,101 @@
+                Command/Change/...                          |                      Description
+
+>> django-admin startproject <Project Name>                 | Создается база нового сайта с файлами настроек, URL и так далее
+>> django-admin startapp <App name>                         | Создается ветка сайта (может состоять из одной страницы)
+>> python(3) manage.py runserver <port|default: 8000>       | Запускает сервер на заданном порту
+_______________________________________________________________________________________________________________________
+settings.py
+1) if DEBUG == False, тогда надо указать разрешенные        |
+    хосты в ALLOWED_HOSTS ('127.0.0.1' as example)          |
+2) Recommended to add next entry to INSTALLED_APPS          |
+    <Site name>.<apps>.<Name of class>                      |
+3) Recommended make dir <templates> and add this directory  |
+    name to TEMPLATES['DIRS']                               |
+4) add vars MEDIA_ROOT and MEDIA_URL to settings.py if      |
+    you want manage images/videos in project                |
+    MEDIA_ROOT - directory on computer (server)             |
+    MEDIA_URL  - path on site                               |
+_______________________________________________________________________________________________________________________
+urls.py
+1) Paths are created through function:
+    FUNCTION: path(rel_url, handler_function)
+2) Recommended to create file <url.py> in branch and in main file <url.py> write next code:
+    FUNCTION: path(rel_url, django.urls.include('{name of branch}.urls'))
+3) if you want to add handler for exceptions write code:
+    CODE: handler<id of exception> (for example, handler404) = <handler_function>
+4) for static:
+CODE: if mysite.settings.DEBUG:
+CODE:   urlpatterns += static(mysite.settings.MEDIA_URL, document_root=mysite.settings.MEDIA_ROOT)
+<handler_function> is created by your own
+5) Можно создавать URL'ам имена:
+CODE: path('<url>', <function>, name='<name>')
+Может использваться в шаблонах:
+CODE: {% url '<name>' %}
+_______________________________________________________________________________________________________________________
+templates
+{% block <block name> %}{% endblock %}
+{{ <var name> }}
+{% extends "<base template>" %}
+_______________________________________________________________________________________________________________________
+views.py
+Here defined handler functions
+For example:
+1)
+CODE: def <handler_function_name>(request):
+CODE:   return django.http.HttpResponse('<html text>')
+2)
+CODE: def <handler_function_name>(request):
+CODE:   return django.shortcuts.render(request, '<html file with templates>')
+3)
+CODE: def <handler_function_name>(request):
+CODE:   return django.shortcuts.render(request, '<html file with templates>',
+                                       context={
+                                            '<var>' : value,
+                                       })
+
+                                       #<var> is taken from <html file with templates>
+4)
+CODE:   def <handler_function_name>(request, exception):
+CODE:       return django.http.HttpResponseNotFound('<h1>Error 404</h1><p>Page not found</p>')
+_______________________________________________________________________________________________________________________
+models.py
+1) In this file should be a discription of table in DB.
+sqlite3 is used by default.
+Example:
+CODE:
+    class Graphs(models.Model):
+        title = models.CharField(max_length=255)
+        photo = models.ImageField(upload_to="photos/%Y/%m/%d/")
+        time_create = models.DateTimeField(auto_now_add=True)
+        time_update = models.DateTimeField(auto_now=True)
+        is_published = models.BooleanField(default=True)
+2) to create a migration (move created class to DB) should be done next commands:
+                       Command                              |                      Description
+>> python(3) manage.py migrate                              | Command will create table in DB
+>> python(3) manage.py sqlmigrate <App name> <number>       | Show DB command, that will be executed.
+                                                            | for example, <number> = 0001
+
+3) Экземпляры классов в models.py соответствуют записям в соответствующей таблице.
+>> python(3) manage.py shell | зайти в командную оболочку
+>>> from <App name>.models import <Class name>
+>>> <var name> = <Class name>(key=value,...) | Создать запись (без сохранения в DB)
+>>> <var name>.save() | сохранить запись в DB
+
+>>> from djange.db import connection
+>>> connection.queries | вывести список запросов в DB на языке SQL
+
+>>> <Class name>.objects.create(key=value,...) | Создать запись и сразу сохранить её в DB
+>>> <Class name>.objects.all() | Получить все записи из таблицы
+>>> <Class name>.objects.filter(<key>=<value>) | Получить записи, соответствующие фильтру
+
+# pk - primary key (unique for every entry)
+
+>>> <Class name>.objects.filter(pk__gte=<value>) | Выбрать все записи с pk >= 2, суффикс <key>__gte or <key>__lte значат >= и <=
+>>> <Class name>.objects.exclude(<key>=<value>) | Выбрать все записи, не соответствующие критериям
+>>> <Class name>.objects.get(<key>=<value>) | Аналогично .filter(), но данный момент генерирует исключения при отсутствии
+                                              подходящих записей и так далее
+>>> <Class name>.objects.filter(<key>=<value>).order_by('<key>') | + сортировка по <key>. Если поставить минус перед ключем,
+                                                                  то сортировка будет в обратном порядке ('-<key>')
+>>> Class name>.objects.filter(<key>=<value>).delete() | Удаление объектов
+_______________________________________________________________________________________________________________________
+
