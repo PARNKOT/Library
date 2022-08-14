@@ -1,3 +1,5 @@
+Алгоритм поиска в глубину
+
 def DFS(start_node, key):
     next_nodes = []
     seen_nodes = set()
