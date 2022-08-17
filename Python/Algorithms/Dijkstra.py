@@ -1,3 +1,7 @@
+# Алгоритм Дейкстры поиска кратчайшего пути между двумя вершинами на графе
+# Полезные ссылки:
+# 1) https://habr.com/ru/post/111361/
+
 class Node:
     def __init__(self, number, *args):
         self.number = number
