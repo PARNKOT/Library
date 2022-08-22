@@ -99,8 +99,8 @@ __<name>__(self,...)
     c = Counter
     del c[key]
   
-16) def __enter__()
+16) def __enter__() -> object
     Вызывается при входе в менеджер контекста (with)
     
-17) def __exit__(...):
+17) def __exit__(...) -> bool
     Вызывается при выходе из менеджера контекста (with)
