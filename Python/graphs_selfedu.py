@@ -2,47 +2,6 @@ def print_dict(toprint):
     for key, value in toprint.items():
         print(f'{key}: {value}')
 
-'''
-def path_on_graph(graph, start_node, end_node):
-    nodes_weights = {}
-    closest_nodes = {}
-
-    for key in graph.vertex:
-        nodes_weights[key] = None
-        closest_nodes[key] = start_node
-    nodes_weights[start_node] = 0
-
-    next_nodes = [start_node]
-    seen_nodes = set()
-
-    while next_nodes:
-        current_node = next_nodes.pop()
-        for n in current_node:
-            if n not in seen_nodes:
-                new_weight = nodes_weights[current_node] + graph.get_link_by_2vertex(current_node, n).dist
-                if nodes_weights[n] is None or new_weight < nodes_weights[n]:
-                    nodes_weights[n] = new_weight
-                    closest_nodes[n] = current_node
-                if n not in next_nodes:
-                    next_nodes.append(n)
-        seen_nodes.add(current_node)
-
-    if nodes_weights[end_node]:
-        path = [end_node]
-        #current_node = closest_nodes[end_node]
-        for i in range(len(closest_nodes)-1):
-            if closest_nodes[path[i]] == start_node:
-                path.append(start_node)
-                path.reverse()
-                return path
-            path.append(closest_nodes[path[i]])
-
-    return None
-
-    #print_dict(nodes_weights)
-    #print_dict(closest_nodes)
-'''
-
 
 def path_on_graph(graph, start_node, end_node):
     nodes_weights = {}
