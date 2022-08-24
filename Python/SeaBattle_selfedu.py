@@ -17,6 +17,9 @@ class Queue:
     def isEmpty(self):
         return not bool(self.__queue)
 
+    def __len__(self):
+        return len(self.__queue)
+
 
 def distance(point1, point2):
     return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
@@ -56,6 +59,11 @@ class Ship:
     @property
     def orientation(self):
         return self._tp
+
+    @orientation.setter
+    def orientation(self, value):
+        if value in (GameOptions.HORIZONTAL, GameOptions.VERTICAL):
+            self._tp = value
 
     def set_start_coords(self, x, y):
         self._x = x
@@ -122,6 +130,22 @@ class Ship:
             except IndexError as e:
                 print('Wrong index for ship cells!' + str(e))
 
+    def __repr__(self):
+        return f'Ship with {self.length} decks'
+
+    def __str__(self):
+        return f'Ship with {self.length} decks, coords: x = {self._x}, y = {self._y}'
+
+    def get_ships_allcells_coord(self):
+        start_x, start_y = self.get_start_coords()
+        out = []
+        for i in range(0, self.length):
+            if self.orientation == GameOptions.HORIZONTAL:
+                out.append((start_x + i, start_y))
+            else:
+                out.append((start_x, start_y + i))
+        return out
+
 
 class ShipsMover:
     def __init__(self, size, ships):
@@ -133,6 +157,8 @@ class ShipsMover:
         for other_ship in self.ships:
             if id(ship) != id(other_ship):
                 collision = ship.is_collide(other_ship)
+                if collision:
+                    break
         return collision
 
     def __call__(self, step=1):
@@ -140,8 +166,8 @@ class ShipsMover:
         for ship in self.ships:
             move_queue.add(ship)
 
+        count = 0
         while move_queue:
-            count = 0
             ship = move_queue.pop()
             ship.move(step)
             if self.is_collision(ship) or ship.is_out_pole(self.size):
@@ -150,18 +176,18 @@ class ShipsMover:
                 count += 1
             else:
                 count = 0
-            
-            if count == len(self.ships):
+
+            if count == len(move_queue):
                 break
 
 
 class GamePole:
-    __slots__ = ('_size', '_ships', '__allowed_cells', 'ships_mover')
+    __slots__ = ('_size', '_ships', '__allowed_cells', '__pole', 'ships_mover')
 
     def __init__(self, size):
         self._size = size
         self._ships: List[Ship] = []
-        self.__allowed_cells = [[0 for _ in range(size)] for _ in range(size)]
+        self.__pole = [[0 for _ in range(size)] for _ in range(size)]
         self.ships_mover = ShipsMover(size, self._ships)
 
     def place_ship(self, ship):
@@ -177,16 +203,56 @@ class GamePole:
         for ship_type in ships:
             self._ships.extend(ship_type)
         # Implement ships placing
+        # hardcode
+        # temporary
+        # ONE DECK
+        self._ships[0].set_start_coords(0, 0)
+        self._ships[1].set_start_coords(2, 0)
+        self._ships[2].set_start_coords(4, 0)
+        self._ships[3].set_start_coords(6, 0)
+        # TWO DECK
+        self._ships[4].set_start_coords(0, 2)
+        self._ships[5].set_start_coords(8, 2)
+        self._ships[6].orientation = GameOptions.VERTICAL
+        self._ships[6].set_start_coords(4, 2)
+        # THREE DECK
+        self._ships[7].set_start_coords(0, 5)
+        self._ships[8].orientation = GameOptions.VERTICAL
+        self._ships[8].set_start_coords(9, 5)
+        # FOUR DECK
+        self._ships[9].set_start_coords(0, 9)
+        self.update_pole()
+
+        #for i in range(len(self._ships)):
+        #    self._ships[i].set_start_coords(0, i)
 
     def move_ships(self):
         self.ships_mover()
+        self.update_pole()
+
+    def update_pole(self):
+        self.__pole = [[0 for _ in range(self._size)] for _ in range(self._size)]
+        for ship in self._ships:
+            ship_cells_coords = ship.get_ships_allcells_coord()
+            for cell in ship_cells_coords:
+                self.__pole[cell[1]][cell[0]] = 1
+
+    def show(self):
+        print('-'*15, ' Pole ', '-'*15, sep='')
+        for row in self.__pole:
+            print(*row)
 
 
 if __name__ == "__main__":
-    ship4 = Ship(4, GameOptions.HORIZONTAL, 0, 0)
-    ship3 = Ship(3, GameOptions.VERTICAL, 0, 2)
-    ship2 = Ship(2, GameOptions.HORIZONTAL, 8, 9)
-    print(ship4.is_collide(ship3))
-    print(ship3.is_collide(ship4))
-    print(ship2.is_out_pole(10))
+    gp = GamePole(10)
+    gp.init()
+    gp.show()
+    gp.move_ships()
+    gp.show()
+    #ship4 = Ship(4, GameOptions.HORIZONTAL, 0, 0)
+    #ship3 = Ship(3, GameOptions.VERTICAL, 0, 2)
+    #ship2 = Ship(2, GameOptions.HORIZONTAL, 8, 9)
+    #print(ship4.is_collide(ship3))
+    #print(ship3.is_collide(ship4))
+    #print(ship2.is_out_pole(10))
 
