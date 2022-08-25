@@ -1,28 +1,6 @@
-import math
 import random
 from typing import List
-
-
-class Queue:
-    def __init__(self):
-        self.__queue = []
-
-    def add(self, element):
-        self.__queue.insert(0, element)
-
-    def pop(self):
-        if not self.isEmpty():
-            return self.__queue.pop()
-
-    def isEmpty(self):
-        return not bool(self.__queue)
-
-    def __len__(self):
-        return len(self.__queue)
-
-
-def distance(point1, point2):
-    return math.sqrt((point1[0] - point2[0])**2 + (point1[1] - point2[1])**2)
+from utils import Queue, distance
 
 
 class GameOptions:
@@ -34,13 +12,6 @@ class GameOptions:
 
     HORIZONTAL = 1
     VERTICAL = 2
-    #@property
-    #def HORIZONTAL(self):
-    #    return 1
-
-    #@property
-    #def VERTICAL(self):
-    #    return 2
 
 
 class Ship:
@@ -74,6 +45,9 @@ class Ship:
     def get_start_coords(self):
         return self._x, self._y
 
+    def isPlaced(self):
+        return not None in self.get_start_coords()
+
     def move(self, go):
         if self._is_move:
             if self._tp == GameOptions.HORIZONTAL:
@@ -82,26 +56,12 @@ class Ship:
                 self._y += go
 
     def is_collide(self, ship):
-        ship1_coord = list(self.get_start_coords())
-        cell_ship1 = ship1_coord.copy()
-        for counter_ship1 in range(self.length):
-            if self.orientation == GameOptions.HORIZONTAL:
-                cell_ship1[0] = ship1_coord[0] + counter_ship1
-            else:
-                cell_ship1[1] = ship1_coord[1] + counter_ship1
-
-            ship2_coord = list(ship.get_start_coords())
-            cell_ship2 = ship2_coord.copy()
-            for counter_ship2 in range(ship.length):
-                if ship.orientation == GameOptions.HORIZONTAL:
-                    cell_ship2[0] = ship2_coord[0] + counter_ship2
-                else:
-                    cell_ship2[1] = ship2_coord[1] + counter_ship2
-
-                dist = distance(cell_ship1, cell_ship2)
-                if dist < GameOptions.COLLIDE_DIST:
-                    return True
-
+        if self.isPlaced() and ship.isPlaced():
+            for cell_first_ship in self.get_all_cells_of_ship():
+                for cell_second_ship in ship.get_all_cells_of_ship():
+                    dist = distance(cell_first_ship, cell_second_ship)
+                    if dist < GameOptions.COLLIDE_DIST:
+                        return True
         return False
 
     def is_out_pole(self, size):
@@ -122,7 +82,7 @@ class Ship:
 
         return False
 
-    def get_ships_allcells_coord(self):
+    def get_all_cells_of_ship(self):
         start_x, start_y = self.get_start_coords()
         out = []
         for i in range(self.length):
@@ -145,7 +105,7 @@ class Ship:
 
     def get_restricted_ship_area(self, size):
         restricted_cells = set()
-        for cell in self.get_ships_allcells_coord():
+        for cell in self.get_all_cells_of_ship():
             neighboors = self.get_cell_neighboors(cell, size)
             restricted_cells.update(neighboors)
         return restricted_cells
@@ -263,21 +223,7 @@ class GamePole:
         # hardcode
         # temporary
         # ONE DECK
-        self._ships[0].set_start_coords(0, 0)
-        self._ships[1].set_start_coords(2, 0)
-        self._ships[2].set_start_coords(4, 0)
-        self._ships[3].set_start_coords(6, 0)
-        # TWO DECK
-        self._ships[4].set_start_coords(0, 2)
-        self._ships[5].set_start_coords(8, 2)
-        self._ships[6].orientation = GameOptions.VERTICAL
-        self._ships[6].set_start_coords(4, 2)
-        # THREE DECK
-        self._ships[7].set_start_coords(0, 5)
-        self._ships[8].orientation = GameOptions.VERTICAL
-        self._ships[8].set_start_coords(9, 5)
-        # FOUR DECK
-        self._ships[9].set_start_coords(0, 9)
+
         self.ships_constelattor.place_ships()
         self.update_pole()
 
@@ -288,9 +234,9 @@ class GamePole:
     def update_pole(self):
         self.__pole = [[0 for _ in range(self._size)] for _ in range(self._size)]
         for ship in self._ships:
-            ship_cells_coords = ship.get_ships_allcells_coord()
-            for cell in ship_cells_coords:
-                self.__pole[cell[1]][cell[0]] = 1
+            ship_cells_coords = ship.get_all_cells_of_ship()
+            for x, y in ship_cells_coords:
+                self.__pole[y][x] = 1
 
     def show(self):
         print('-'*15, ' Pole ', '-'*15, sep='')
@@ -307,4 +253,6 @@ class GamePole:
 if __name__ == "__main__":
     gp = GamePole(10)
     gp.init()
-    print(gp.get_pole())
+    gp.show()
+    gp.move_ships()
+    gp.show()
