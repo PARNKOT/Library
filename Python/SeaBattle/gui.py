@@ -1,5 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
+from utils import Point
+from functools import partial
 
 
 class GuiOptions:
@@ -16,16 +18,25 @@ class NButton(ttk.Frame):
         self.button.pack(expand=1)
 
 
+def stub(point: Point):
+    print(point)
+
+
 class GamePoleGui(ttk.Frame):
+    __slots__ = ['cells']
+
     def __init__(self, master):
         super().__init__(master)
+
+        # Styles
         ttk.Style().configure('GamePole.TFrame', background='blue')
-        style_cell = ttk.Style()
-        style_cell.map('Cell.TButton',
-                              background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')])
+        ttk.Style().map('Cell.TButton', background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')])
+
         self.configure(style='GamePole.TFrame', padding=5)
         self.cells = [[ttk.Button(self) for _ in range(10)] for _ in range(10)]
+
         self.make_pole()
+        self.configure_cells()
 
     def make_pole(self):
         for row in self.cells:
@@ -35,6 +46,11 @@ class GamePoleGui(ttk.Frame):
         for row in range(10):
             for column in range(10):
                 self.cells[row][column].grid(row=row, column=column, ipady=3)
+
+    def configure_cells(self):
+        for row_index in range(10):
+            for column_index in range(10):
+                self.cells[row_index][column_index].configure(command=partial(stub, Point(column_index, row_index)))
 
 
 class MainWindow(tk.Tk):
@@ -81,13 +97,15 @@ class MainWindow(tk.Tk):
         self.separator.pack(side=tk.LEFT, fill='both')
         self.main_frame.pack(side=tk.LEFT, fill='both')
 
+    @staticmethod
+    def func(e):
+        print(e)
+
     def init_buttons(self):
         self.start_button.configure(text='START')
         self.start_button.pack(fill='x', ipady=50, pady=10)
 
     def init_gamepoles(self):
-        #self.gamepole_player1.configure(style='GamePole.TFrame', height=335, width=400)
-        #self.gamepole_player2.configure(style='GamePole.TFrame', height=335, width=400)
         self.gamepole_player1.pack(side=tk.TOP)
         self.gamepole_player2.pack(side=tk.BOTTOM)
 
@@ -96,6 +114,10 @@ class MainWindow(tk.Tk):
         self.init_buttons()
         self.init_gamepoles()
         self.mainloop()
+
+
+def func(e):
+    print(e)
 
 
 if __name__ == "__main__":
