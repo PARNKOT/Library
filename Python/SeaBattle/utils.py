@@ -36,6 +36,9 @@ class Point:
     def __hash__(self):
         return hash((self.x, self.y))
 
+    def __str__(self):
+        return f'Point: x = {self.x}, y = {self.y}'
+
 
 class CoordConverter:
     @staticmethod
