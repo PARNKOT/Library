@@ -1,6 +1,6 @@
 import random
 from typing import List, Set
-from utils import Queue, distance, Point
+from utils import Queue, distance, Point, CoordConverter
 from itertools import product
 
 
@@ -29,7 +29,6 @@ class Ship:
     def __init__(self):
         self._configuration = ShipConfiguration()
         self._is_move = True
-        #self._cells = [1 for _ in range(length)]
 
     def __eq__(self, other):
         return self.start_point.x == other.start_point.x \
@@ -64,11 +63,17 @@ class Ship:
         return self._configuration.start_point.x, self._configuration.start_point.y
 
     # --------------------------------------------- TO THINK
-    def isPlaced(self):
+    def is_placed(self):
         if self.start_point.x is None or self.start_point.y is None:
             return False
         return True
     # --------------------------------------------- TO THINK
+
+    def change_orientation(self):
+        if self.orientation == GameOptions.HORIZONTAL:
+            self.orientation = GameOptions.VERTICAL
+        else:
+            self.orientation = GameOptions.HORIZONTAL
 
     def move(self, step):
         if self._is_move:
@@ -84,7 +89,7 @@ class Ship:
         self._configuration.start_point.y += dy
 
     def is_collide(self, ship):
-        if self.isPlaced() and ship.isPlaced():
+        if self.is_placed() and ship.is_placed():
             for cell_first_ship, cell_second_ship in product(self.get_all_cells_of_ship(), ship.get_all_cells_of_ship()):
                 dist = distance(cell_first_ship, cell_second_ship)
                 if dist < GameOptions.COLLIDE_DIST:
@@ -157,31 +162,19 @@ class GamePole:
         self._ships: List[Ship] = []
         self.__pole = [[0 for _ in range(size)] for _ in range(size)]
         self.ships_mover = ShipsMover(self)
-        #self.ships_constelattor = ShipConstellator(self)
-
-    def is_collision(self, ship):
-        collision = False
-        for other_ship in self._ships:
-            #if id(ship) != id(other_ship):
-            if id(ship) != id(other_ship):
-                collision = ship.is_collide(other_ship)
-                if collision:
-                    break
-        return collision
 
     def init(self):
         self._ships.clear()
         ships = [
-            [OneDeckShip() for i in range(GameOptions.ONE_DECKS)],
-            [TwoDeckShip() for i in range(GameOptions.TWO_DECKS)],
-            [ThreeDeckShip() for i in range(GameOptions.THREE_DECKS)],
-            [FourDeckShip() for i in range(GameOptions.FOUR_DECKS)],
+            [OneDeckShip() for _ in range(GameOptions.ONE_DECKS)],
+            [TwoDeckShip() for _ in range(GameOptions.TWO_DECKS)],
+            [ThreeDeckShip() for _ in range(GameOptions.THREE_DECKS)],
+            [FourDeckShip() for _ in range(GameOptions.FOUR_DECKS)],
         ]
         for ship_type in ships:
             self._ships.extend(ship_type)
 
         ShipConstellator(self).place_ships()
-        #self.ships_constelattor.place_ships()
         self.update_pole()
 
     def move_ships(self):
@@ -211,21 +204,30 @@ class GamePole:
     def get_ships(self):
         return self._ships
 
-    def get_cell_neighboors(self, point: Point) -> List[Point]:
-        neighboors = []
+    def is_collision(self, ship):
+        collision = False
+        for other_ship in self._ships:
+            if id(ship) != id(other_ship):
+                collision = ship.is_collide(other_ship)
+                if collision:
+                    break
+        return collision
+
+    def get_cell_neighbours(self, point: Point) -> List[Point]:
+        neighbours = []
         for dx in range(-1, 2):
             for dy in range(-1, 2):
                 x = point.x + dx
                 y = point.y + dy
-                if  0 <= x < self._size and 0 <= y < self._size:
-                    neighboors.append(Point(x, y))
-        return neighboors
+                if 0 <= x < self._size and 0 <= y < self._size:
+                    neighbours.append(Point(x, y))
+        return neighbours
 
     def get_restricted_ship_area(self, ship) -> Set[Point]:
         restricted_cells = set()
         for point in ship.get_all_cells_of_ship():
-            neighboors = self.get_cell_neighboors(point)
-            restricted_cells.update(neighboors)
+            neighbours = self.get_cell_neighbours(point)
+            restricted_cells.update(neighbours)
         return restricted_cells
 
 
@@ -278,57 +280,45 @@ class ShipsMover(GamePoleOwner):
                 break
 
 
-class CoordConverter:
-    @staticmethod
-    def absolute_to_matrix(abs_coord, size):
-        y = abs_coord//size
-        x = abs_coord - y*size
-        return Point(x, y)
-
-    @staticmethod
-    def matrix_to_absolute(point: Point, size):
-        return point.y*size + point.x
-
-
 class ShipConstellator(GamePoleOwner):
     def __init__(self, gamepole: GamePole):
         super().__init__(gamepole)
         self.allowed_cells = list(range(self.size * self.size))
 
+    def place_ship(self, ship):
+        local_allowed_cells = self.allowed_cells.copy()
+        while local_allowed_cells:
+            position_absolute = random.choice(local_allowed_cells)
+            start_point = CoordConverter.absolute_to_matrix(position_absolute, self.size)
+            ship.start_point = start_point
+            if self.gamepole.is_collision(ship) or ship.is_out_pole(self.size):
+                ship.start_point = Point(None, None)
+                local_allowed_cells.remove(position_absolute)
+            else:
+                break
+
+        if ship.start_point.isEmpty():
+            raise ValueError('Не удалось разместить корабль. Попробуйте снова')
+
+        restricted_area = self.gamepole.get_restricted_ship_area(ship)
+        for point in restricted_area:
+            abs_cell = CoordConverter.matrix_to_absolute(point, self.size)
+            if abs_cell in self.allowed_cells:
+                self.allowed_cells.remove(abs_cell)
+
     def place_ships(self):
         for ship in self.ships:
-            local_allowed_cells = self.allowed_cells.copy()
-            while local_allowed_cells:
-                position_absolute = random.choice(local_allowed_cells)
-                start_point = CoordConverter.absolute_to_matrix(position_absolute, self.size)
-                ship.start_point = start_point
-                if self.gamepole.is_collision(ship) or ship.is_out_pole(self.size):
-                    ship.start_point = Point(None, None)
-                    local_allowed_cells.remove(position_absolute)
-                else:
-                    break
-
-            restricted_area = self.gamepole.get_restricted_ship_area(ship)
-            for point in restricted_area:
-                abs_cell = CoordConverter.matrix_to_absolute(point, self.size)
-                if abs_cell in self.allowed_cells:
-                    self.allowed_cells.remove(abs_cell)
-
-        #DEBUG
-        for ship in self.ships:
-            for point in ship.get_all_cells_of_ship():
-                if point.x < 0 or point.x > 9 or point.y < 0 or point.y > 9:
-                    print()
-
+            try:
+                self.place_ship(ship)
+            except ValueError:
+                ship.change_orientation()
+                self.place_ship(ship)
+ 
 
 if __name__ == "__main__":
     gp = GamePole(10)
-    for c in range(10000):
+    for c in range(1000):
         try:
             gp.init()
         finally:
             print(c)
-
-    #gp.show()
-    #gp.move_ships()
-    #gp.show()
