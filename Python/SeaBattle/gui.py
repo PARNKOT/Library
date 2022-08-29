@@ -3,9 +3,9 @@ from tkinter import ttk
 
 
 class GuiOptions:
-    MAINWINDOW_WIDTH = 1000
+    MAINWINDOW_WIDTH = 650
     MAINWINDOW_HEIGHT = 700
-    MENU_WIDTH_PERCENT = 0.2
+    MENU_WIDTH_PERCENT = 0.3
 
 
 class NButton(ttk.Frame):
@@ -20,9 +20,10 @@ class GamePoleGui(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
         ttk.Style().configure('GamePole.TFrame', background='blue')
-        ttk.Style().configure('Cell.TButton', background='blue', foreground='red', relief='flat')
+        style_cell = ttk.Style()
+        style_cell.map('Cell.TButton',
+                              background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')])
         self.configure(style='GamePole.TFrame', padding=5)
-
         self.cells = [[ttk.Button(self) for _ in range(10)] for _ in range(10)]
         self.make_pole()
 
@@ -33,7 +34,7 @@ class GamePoleGui(ttk.Frame):
 
         for row in range(10):
             for column in range(10):
-                self.cells[row][column].grid(row=row, column=column, ipady=4)
+                self.cells[row][column].grid(row=row, column=column, ipady=3)
 
 
 class MainWindow(tk.Tk):
@@ -41,8 +42,10 @@ class MainWindow(tk.Tk):
         super().__init__()
 
         # MainWindow
+        ttk.Style().theme_use("default")
         self.geometry(f'{GuiOptions.MAINWINDOW_WIDTH}x{GuiOptions.MAINWINDOW_HEIGHT}')
         self.title('SeaBattle')
+        self.resizable(True, False)
 
         # Frames
         self.main_frame = ttk.Frame(self, padding=10)
