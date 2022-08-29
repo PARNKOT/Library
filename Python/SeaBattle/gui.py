@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from utils import Point
 from functools import partial
+from SeaBattle import GamePole
 
 
 class GuiOptions:
@@ -23,14 +24,18 @@ def stub(point: Point):
 
 
 class GamePoleGui(ttk.Frame):
-    __slots__ = ['cells']
+    __slots__ = ['cells', '__connected_gamepole']
 
     def __init__(self, master):
         super().__init__(master)
 
+        self.__connected_gamepole = None
+
         # Styles
-        ttk.Style().configure('GamePole.TFrame', background='blue')
-        ttk.Style().map('Cell.TButton', background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')])
+        ttk.Style().configure('GamePole.TFrame', background='#f5f5f5')
+        ttk.Style().map('Cell.TButton',
+                        background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')],
+                        relief=tk.GROOVE)
 
         self.configure(style='GamePole.TFrame', padding=5)
         self.cells = [[ttk.Button(self) for _ in range(10)] for _ in range(10)]
@@ -51,6 +56,9 @@ class GamePoleGui(ttk.Frame):
         for row_index in range(10):
             for column_index in range(10):
                 self.cells[row_index][column_index].configure(command=partial(stub, Point(column_index, row_index)))
+
+    def connect(self, gamepole: GamePole):
+        self.__connected_gamepole = gamepole
 
 
 class MainWindow(tk.Tk):
@@ -75,6 +83,7 @@ class MainWindow(tk.Tk):
 
         # Buttons
         self.start_button = ttk.Button(self.menu_frame)
+        self.random_button = ttk.Button(self.menu_frame)
 
         # Styles
         ttk.Style().configure('Menu.TFrame', background='green')
@@ -105,6 +114,9 @@ class MainWindow(tk.Tk):
         self.start_button.configure(text='START')
         self.start_button.pack(fill='x', ipady=50, pady=10)
 
+        self.random_button.configure(text='RANDOM')
+        self.random_button.pack(fill='x', ipady=50, pady=10)
+
     def init_gamepoles(self):
         self.gamepole_player1.pack(side=tk.TOP)
         self.gamepole_player2.pack(side=tk.BOTTOM)
@@ -114,10 +126,6 @@ class MainWindow(tk.Tk):
         self.init_buttons()
         self.init_gamepoles()
         self.mainloop()
-
-
-def func(e):
-    print(e)
 
 
 if __name__ == "__main__":
