@@ -14,6 +14,8 @@ class SeaBattle:
         self.gui_app.gamepole_player2.connect(self.gp2)
 
     def play(self):
+        self.gp2.init()
+        self.gui_app.gamepole_player2.update()
         self.gui_app.run()
 
 
