@@ -67,7 +67,7 @@ class GamePoleGui(ttk.Frame):
         self.__connected_gamepole = gamepole
 
     def draw_point(self, point: Point):
-        self.cells[point.x][point.y].configure(style='ShipCell.TButton')
+        self.cells[point.y][point.x].configure(style='ShipCell.TButton')
 
     def draw_ship(self, ship_points: Iterable):
         for point in ship_points:
