@@ -3,12 +3,15 @@ from tkinter import ttk
 from utils import Point
 from functools import partial
 from SeaBattle import GamePole
+from typing import Iterable
 
 
 class GuiOptions:
     MAINWINDOW_WIDTH = 650
     MAINWINDOW_HEIGHT = 700
     MENU_WIDTH_PERCENT = 0.3
+
+    SHIP_COLOR = 'red'
 
 
 class NButton(ttk.Frame):
@@ -29,12 +32,17 @@ class GamePoleGui(ttk.Frame):
     def __init__(self, master):
         super().__init__(master)
 
-        self.__connected_gamepole = None
+        self.__connected_gamepole: GamePole
 
         # Styles
         ttk.Style().configure('GamePole.TFrame', background='#f5f5f5')
         ttk.Style().map('Cell.TButton',
                         background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')],
+                        relief=tk.GROOVE)
+        ttk.Style().map('ShipCell.TButton',
+                        background=[('!active', GuiOptions.SHIP_COLOR),
+                                    ('pressed', GuiOptions.SHIP_COLOR),
+                                    ('active', GuiOptions.SHIP_COLOR)],
                         relief=tk.GROOVE)
 
         self.configure(style='GamePole.TFrame', padding=5)
@@ -44,9 +52,7 @@ class GamePoleGui(ttk.Frame):
         self.configure_cells()
 
     def make_pole(self):
-        for row in self.cells:
-            for cell in row:
-                cell.configure(width=5, style='Cell.TButton')
+        self.clear()
 
         for row in range(10):
             for column in range(10):
@@ -59,6 +65,26 @@ class GamePoleGui(ttk.Frame):
 
     def connect(self, gamepole: GamePole):
         self.__connected_gamepole = gamepole
+
+    def draw_point(self, point: Point):
+        self.cells[point.x][point.y].configure(style='ShipCell.TButton')
+
+    def draw_ship(self, ship_points: Iterable):
+        for point in ship_points:
+            self.draw_point(point)
+
+    def update(self):
+        for ship in self.__connected_gamepole.get_ships():
+            self.draw_ship(ship.get_all_cells_of_ship())
+
+    def clear(self):
+        for row in self.cells:
+            for cell in row:
+                cell.configure(width=5, style='Cell.TButton')
+
+    @property
+    def connected_gamepole(self):
+        return self.__connected_gamepole
 
 
 class MainWindow(tk.Tk):
@@ -106,15 +132,16 @@ class MainWindow(tk.Tk):
         self.separator.pack(side=tk.LEFT, fill='both')
         self.main_frame.pack(side=tk.LEFT, fill='both')
 
-    @staticmethod
-    def func(e):
-        print(e)
+    def random_action(self):
+        self.gamepole_player2.connected_gamepole.init()
+        self.gamepole_player2.clear()
+        self.gamepole_player2.update()
 
     def init_buttons(self):
         self.start_button.configure(text='START')
         self.start_button.pack(fill='x', ipady=50, pady=10)
 
-        self.random_button.configure(text='RANDOM')
+        self.random_button.configure(text='RANDOM', command=self.random_action)
         self.random_button.pack(fill='x', ipady=50, pady=10)
 
     def init_gamepoles(self):
