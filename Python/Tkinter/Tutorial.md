@@ -7,4 +7,5 @@ root = Tk() <br />
 root.mainloop()
 
 ## Make Frame
-ttk.Frame(root)
+frame = ttk.Frame(root, padding=10), # padding - внутренний отступ  <br />
+frame.grid() #размещение frame
