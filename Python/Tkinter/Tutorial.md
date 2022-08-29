@@ -1,9 +1,9 @@
-## Tkinter tutorial
+# Tkinter tutorial
 from tkinter import *
 from tkinter import ttk
 
-# Make app
+## Make app
 root = Tk()
 
-# Make Frame
+## Make Frame
 ttk.Frame(root)
