@@ -7,19 +7,31 @@ class SeaBattle:
         self.gp1 = sb.GamePole(10)
         self.gp2 = sb.GamePole(10)
         self.gui_app = gui.MainWindow()
-        self.connect_poles_with_gui()
 
-    def connect_poles_with_gui(self):
-        self.gui_app.gamepole_player1.connect(self.gp1)
-        self.gui_app.gamepole_player2.connect(self.gp2)
+        # configure
+        self.gui_app.start_button.configure(command=self.start)
+        self.gui_app.random_button.configure(command=self.generate_ships)
 
-    def play(self):
-        self.gp2.init()
-        self.gui_app.gamepole_player2.update()
+    def generate_ships(self):
+        self.gui_app.gamepolegui_player2.clear()
+
+        while True:
+            try:
+                self.gp2.init()
+                break
+            except ValueError:
+                pass
+        for ship in self.gp2.get_ships():
+            self.gui_app.gamepolegui_player2.draw_ship(ship)
+
+    def start(self):
+        pass
+
+    def open_app(self):
         self.gui_app.run()
 
 
 if __name__ == "__main__":
     game = SeaBattle()
-    game.play()
+    game.open_app()
 
