@@ -134,24 +134,28 @@ class OneDeckShip(Ship):
     def __init__(self):
         super().__init__()
         self._configuration.length = 1
+        self._cells = [0]
 
 
 class TwoDeckShip(Ship):
     def __init__(self):
         super().__init__()
         self._configuration.length = 2
+        self._cells = [0, 0]
 
 
 class ThreeDeckShip(Ship):
     def __init__(self):
         super().__init__()
         self._configuration.length = 3
+        self._cells = [0, 0, 0]
 
 
 class FourDeckShip(Ship):
     def __init__(self):
         super().__init__()
         self._configuration.length = 4
+        self._cells = [0, 0, 0, 0]
 
 
 class GamePole:
@@ -230,6 +234,20 @@ class GamePole:
             restricted_cells.update(neighbours)
         return restricted_cells
 
+    def find_hitted_point(self, ship, point: Point) -> Point:
+        for cell in ship.get_all_cells_of_ship():
+            if point == cell:
+                return cell
+
+    def hit(self, point: Point):
+        for ship in self._ships:
+            hitted_point = self.find_hitted_point(ship, point)
+            if hitted_point:
+                hitted_point.isHitted = True
+                ship._is_move = False
+                break
+        print(f'Hit on {point}')
+
 
 class GamePoleOwner:
     def __init__(self, gamepole: GamePole):
@@ -286,6 +304,7 @@ class ShipConstellator(GamePoleOwner):
         self.allowed_cells = list(range(self.size * self.size))
 
     def place_ship(self, ship):
+        ship.orientation = random.choice([GameOptions.HORIZONTAL, GameOptions.VERTICAL])
         local_allowed_cells = self.allowed_cells.copy()
         while local_allowed_cells:
             position_absolute = random.choice(local_allowed_cells)
