@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from utils import Point
 from functools import partial
-from SeaBattle import GamePole, Ship
+from backend import GamePole, Ship
 from typing import Iterable
 
 STYLES = {
