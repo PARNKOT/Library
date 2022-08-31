@@ -26,6 +26,7 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.isHitted = False
 
     def isEmpty(self):
         return self.x is None or self.y is None
@@ -38,6 +39,7 @@ class Point:
 
     def __str__(self):
         return f'Point: x = {self.x}, y = {self.y}'
+
 
 
 class CoordConverter:
