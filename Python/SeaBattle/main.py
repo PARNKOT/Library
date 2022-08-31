@@ -1,5 +1,5 @@
 import gui
-import SeaBattle as sb
+import backend as sb
 
 
 class SeaBattle:
