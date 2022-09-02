@@ -239,6 +239,12 @@ class GamePole:
             if point == cell:
                 return cell
 
+    def is_ship_on_point(self, point: Point):
+        for ship in self._ships:
+            if point in ship.get_all_cells_of_ship():
+                return True
+        return False
+
     def hit(self, point: Point):
         for ship in self._ships:
             hitted_point = self.find_hitted_point(ship, point)
