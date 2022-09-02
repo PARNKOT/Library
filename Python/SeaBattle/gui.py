@@ -37,7 +37,7 @@ def stub(point: Point):
 
 
 class GamePoleGui(ttk.Frame):
-    __slots__ = ['cells']
+    __slots__ = ['cells', 'is_enabled']
 
     def __init__(self, master):
         super().__init__(master)
@@ -46,6 +46,7 @@ class GamePoleGui(ttk.Frame):
         ttk.Style().configure('GamePole.TFrame', background='#f5f5f5')
         self.configure(style='GamePole.TFrame', padding=5)
         self.cells = [[ttk.Button(self) for _ in range(10)] for _ in range(10)]
+        self.is_enabled = False
 
         self.make_pole()
 
@@ -71,6 +72,16 @@ class GamePoleGui(ttk.Frame):
         for row in self.cells:
             for cell in row:
                 cell.configure(width=5, style=STYLES['default_cell'])
+
+    def enabled(self, enabled: bool | None):
+        for row in self.cells:
+            for cell in row:
+                if enabled:
+                    cell.configure(state='enabled')
+                    self.is_enabled = True
+                else:
+                    cell.configure(state='disabled')
+                    self.is_enabled = False
 
 
 class MainWindow(tk.Tk):
