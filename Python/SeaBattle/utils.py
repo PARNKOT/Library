@@ -41,7 +41,6 @@ class Point:
         return f'Point: x = {self.x}, y = {self.y}'
 
 
-
 class CoordConverter:
     @staticmethod
     def absolute_to_matrix(abs_coord, size):
