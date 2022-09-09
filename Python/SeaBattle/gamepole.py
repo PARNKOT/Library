@@ -1,161 +1,14 @@
 import random
 from typing import List, Set
-from utils import Queue, distance, Point, CoordConverter
-from itertools import product
-
-
-class GameOptions:
-    ONE_DECKS = 4
-    TWO_DECKS = 3
-    THREE_DECKS = 2
-    FOUR_DECKS = 1
-    COLLIDE_DIST = 1.99
-
-    HORIZONTAL = 1
-    VERTICAL = 2
-
-
-class ShipConfiguration:
-    def __init__(self):
-        self.start_point = Point(None, None)
-        self.orientation = GameOptions.HORIZONTAL
-        self.length = 1
-        self.cells: List[Point] = []
-
-
-class Ship:
-    __slots__ = ('_length', '_configuration', '_is_move', '_cells')
-
-    def __init__(self):
-        self._configuration = ShipConfiguration()
-        self._is_move = True
-
-    def __eq__(self, other):
-        return self.start_point.x == other.start_point.x \
-               and self.start_point.y == other.start_point.y
-
-    @property
-    def length(self):
-        return self._configuration.length
-
-    @property
-    def orientation(self):
-        return self._configuration.orientation
-
-    @orientation.setter
-    def orientation(self, value):
-        if value in (GameOptions.HORIZONTAL, GameOptions.VERTICAL):
-            self._configuration.orientation = value
-
-    @property
-    def start_point(self) -> Point:
-        return self._configuration.start_point
-
-    @start_point.setter
-    def start_point(self, point: Point):
-        self._configuration.start_point = point
-
-    def set_start_coords(self, x, y):
-        self._configuration.start_point.x = x
-        self._configuration.start_point.y = y
-
-    def get_start_coords(self):
-        return self._configuration.start_point.x, self._configuration.start_point.y
-
-    # --------------------------------------------- TO THINK
-    def is_placed(self):
-        if self.start_point.x is None or self.start_point.y is None:
-            return False
-        return True
-    # --------------------------------------------- TO THINK
-
-    def change_orientation(self):
-        if self.orientation == GameOptions.HORIZONTAL:
-            self.orientation = GameOptions.VERTICAL
-        else:
-            self.orientation = GameOptions.HORIZONTAL
-
-    def move(self, step):
-        if self._is_move:
-            if self.orientation == GameOptions.HORIZONTAL:
-                self.move_x(step)
-            else:
-                self.move_y(step)
-
-    def move_x(self, dx):
-        self._configuration.start_point.x += dx
-
-    def move_y(self, dy):
-        self._configuration.start_point.y += dy
-
-    def is_collide(self, ship):
-        if self.is_placed() and ship.is_placed():
-            for cell_first_ship, cell_second_ship in product(self.get_all_cells_of_ship(), ship.get_all_cells_of_ship()):
-                dist = distance(cell_first_ship, cell_second_ship)
-                if dist < GameOptions.COLLIDE_DIST:
-                    return True
-        return False
-
-    def is_out_pole(self, size):
-        for point in self.get_all_cells_of_ship():
-            if any([point.x < 0 or point.x >= size,
-                    point.y < 0 or point.y >= size]):
-                return True
-        return False
-
-    def get_all_cells_of_ship(self) -> List[Point]:
-        out = []
-        if self.orientation == GameOptions.HORIZONTAL:
-            for step in range(self.length):
-                out.append(Point(self.start_point.x + step, self.start_point.y))
-        else:
-            for step in range(self.length):
-                out.append(Point(self.start_point.x, self.start_point.y + step))
-        return out
-
-    def __getitem__(self, index):
-        return self._cells[index]
-
-    def __setitem__(self, key, value):
-        if value in (1, 2):
-            try:
-                self._cells[key] = value
-            except IndexError as e:
-                print('Wrong index for ship cells!' + str(e))
-
-    def __repr__(self):
-        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, {id(self)}'
-
-    def __str__(self):
-        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, {id(self)}'
-
-
-class OneDeckShip(Ship):
-    def __init__(self):
-        super().__init__()
-        self._configuration.length = 1
-        self._cells = [0]
-
-
-class TwoDeckShip(Ship):
-    def __init__(self):
-        super().__init__()
-        self._configuration.length = 2
-        self._cells = [0, 0]
-
-
-class ThreeDeckShip(Ship):
-    def __init__(self):
-        super().__init__()
-        self._configuration.length = 3
-        self._cells = [0, 0, 0]
-
-
-class FourDeckShip(Ship):
-    def __init__(self):
-        super().__init__()
-        self._configuration.length = 4
-        self._cells = [0, 0, 0, 0]
+from utils import Queue, Point, CoordConverter
+from ship import (
+        Ship,
+        OneDeckShip,
+        TwoDeckShip,
+        ThreeDeckShip,
+        FourDeckShip,
+        GameOptions
+    )
 
 
 class GamePole:
@@ -201,9 +54,6 @@ class GamePole:
                 else:
                     print('* ', end='')
             print()
-
-    def get_pole(self):
-        return tuple(map(tuple, self.__pole))
 
     def get_ships(self):
         return self._ships
@@ -336,7 +186,7 @@ class ShipConstellator(GamePoleOwner):
             try:
                 self.place_ship(ship)
             except ValueError:
-                ship.change_orientation()
+                ship.reverse_orientation()
                 self.place_ship(ship)
 
 
