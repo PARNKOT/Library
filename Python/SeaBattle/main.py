@@ -1,7 +1,7 @@
 import random
 
 import gui
-import backend as sb
+import gamepole as sb
 from functools import partial
 
 
@@ -90,7 +90,6 @@ class SeaBattle:
             self.gp1.move_ships()
         else:
             self.gp2.move_ships()
-        
 
     def change_turn(self):
         if self.gui_app.gamepolegui_player1.is_enabled:
