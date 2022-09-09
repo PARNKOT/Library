@@ -1,9 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from utils import Point
-from functools import partial
-from backend import GamePole, Ship
-from typing import Iterable
+
 
 STYLES = {
     'menu_frame': 'Menu.TFrame',
