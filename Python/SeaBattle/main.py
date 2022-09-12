@@ -1,15 +1,9 @@
-import random
+import tkinter
 
 import gui
 import gamepole as sb
+import utils
 from functools import partial
-
-
-class Player:
-    def __init__(self, number: int, gamepolegui: gui.GamePoleGui):
-        self.gamepolegui = gamepolegui
-        self.is_your_turn = False
-        self.number = number
 
 
 class SeaBattle:
@@ -18,29 +12,29 @@ class SeaBattle:
         self.gp2 = sb.GamePole(10)
         self.gui_app = gui.MainWindow()
 
-        #
-        self.is_player1_turn = False # random.choice([True, False])
+        # Properties
+        self.gui_app.gamepolegui_player1.is_hidden = True
 
-        # configure
-        self.gui_app.start_button.bind('<Button-1>', self.start_game,)
-
+        # Buttons
+        self.gui_app.start_button.bind('<Button-1>', self.start_game)
+        self.gui_app.stop_game.bind('<Button-1>', self.stop_game)
         self.gui_app.random_button.configure(command=self.generate_and_draw_ships)
+
+        # Cells
         self.configure_cells(self.gui_app.gamepolegui_player2)
         self.configure_cells(self.gui_app.gamepolegui_player1)
 
-        # disabling game poles
-        self.gui_app.gamepolegui_player1.enabled(False)
-        self.gui_app.gamepolegui_player2.enabled(False)
-
-        # players
-        self.player1 = Player(1, self.gui_app.gamepolegui_player1)
-        self.player1 = Player(2, self.gui_app.gamepolegui_player2)
+        # Status
+        self.status_text = tkinter.StringVar()
+        self.status_text.set("Welcome, comrade!")
+        self.gui_app.status.configure(textvariable=self.status_text, background='#497e76')
 
     def configure_cells(self, gamepolegui: gui.GamePoleGui):
         for row_index in range(10):
             for column_index in range(10):
                 gamepolegui.cells[row_index][column_index].configure(
-                    command=partial(self.cell_pressed, sb.Point(column_index, row_index)))
+                    command=partial(self.cell_pressed, sb.Point(column_index, row_index)),
+                    state='disabled')
 
     def generate_and_draw_ships(self):
         # initializing (generating) game poles
@@ -52,44 +46,40 @@ class SeaBattle:
             except ValueError:
                 pass
 
-        # clearing game poles
-        self.gui_app.gamepolegui_player1.clear()
-        self.gui_app.gamepolegui_player2.clear()
+        self.redraw_gamepole1()
+        self.redraw_gamepole2()
 
-        # drawing ships for player2 gamepolegui
+        self.gui_app.start_button.configure(state='enabled')
+
+    def redraw_gamepole1(self):
+        self.gui_app.gamepolegui_player1.clear()
+        for ship in self.gp1.get_ships():
+            self.gui_app.gamepolegui_player1.draw_ship(ship)
+
+    def redraw_gamepole2(self):
+        self.gui_app.gamepolegui_player2.clear()
         for ship in self.gp2.get_ships():
             self.gui_app.gamepolegui_player2.draw_ship(ship)
 
-    def run_app(self):
-        self.gui_app.run()
-
-    def who_is_first(self):
-        pass
-
-    def start_game(self, event):
-        self.gui_app.gamepolegui_player1.enabled(True)
-
-        print('Start button pressed')
-        print(event)
-
     def cell_pressed(self,  point: sb.Point):
         self.hit(point)
-        self.move_and_redraw_ships()
-        self.change_turn()
+        if not self.referee():
+            self.move_and_redraw_ships()
+            self.change_turn()
 
-    def hit(self, point: sb.Point):
+    def hit(self, point: utils.Point):
         if self.gui_app.gamepolegui_player1.is_enabled:
-            if self.gp1.is_ship_on_point(point):
-                self.gui_app.gamepolegui_player1.cells[point.y][point.x].configure(style=gui.STYLES['hitted_cell'])
+            self.gp1.hit(point)
         else:
-            if self.gp2.is_ship_on_point(point):
-                self.gui_app.gamepolegui_player2.cells[point.y][point.x].configure(style=gui.STYLES['hitted_cell'])
+            self.gp2.hit(point)
 
     def move_and_redraw_ships(self):
         if self.gui_app.gamepolegui_player1.is_enabled:
             self.gp1.move_ships()
+            self.redraw_gamepole1()
         else:
             self.gp2.move_ships()
+            self.redraw_gamepole2()
 
     def change_turn(self):
         if self.gui_app.gamepolegui_player1.is_enabled:
@@ -98,6 +88,42 @@ class SeaBattle:
         else:
             self.gui_app.gamepolegui_player1.enabled(True)
             self.gui_app.gamepolegui_player2.enabled(False)
+
+    def start_game(self, event):
+        self.gui_app.gamepolegui_player1.enabled(True)
+        self.status_start()
+        self.gui_app.random_button.configure(state='disabled')
+
+        print("Game started")
+
+    def referee(self) -> bool:
+        if all([ship.is_destroyed() for ship in self.gp1.get_ships()]):
+            print("Player 2 win")
+            self.stop_game()
+            return True
+        elif all([ship.is_destroyed() for ship in self.gp2.get_ships()]):
+            print("Player 1 win")
+            self.stop_game()
+            return True
+        return False
+
+    def stop_game(self, event=None):
+        self.gui_app.gamepolegui_player1.enabled(False)
+        self.gui_app.gamepolegui_player2.enabled(False)
+        self.status_stop()
+        self.gui_app.random_button.configure(state='enabled')
+        print("Game end")
+
+    def status_start(self):
+        self.status_text.set("STARTED")
+        self.gui_app.status.configure(background='#009a63')
+
+    def status_stop(self):
+        self.status_text.set("STOPPED")
+        self.gui_app.status.configure(background='#c94449')
+
+    def run_app(self):
+        self.gui_app.run()
 
 
 if __name__ == "__main__":
