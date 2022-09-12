@@ -12,10 +12,10 @@ class Queue:
         self.__queue.insert(0, element)
 
     def pop(self):
-        if not self.isEmpty():
+        if not self.is_empty():
             return self.__queue.pop()
 
-    def isEmpty(self):
+    def is_empty(self):
         return not bool(self.__queue)
 
     def __len__(self):
@@ -26,9 +26,9 @@ class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.isHitted = False
+        self.is_hit = False
 
-    def isEmpty(self):
+    def is_none(self):
         return self.x is None or self.y is None
 
     def __eq__(self, other):
