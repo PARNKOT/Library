@@ -1,32 +1,29 @@
 from itertools import product
 from typing import List
-
 from utils import Point, distance
-
-
-class GameOptions:
-    ONE_DECKS = 4
-    TWO_DECKS = 3
-    THREE_DECKS = 2
-    FOUR_DECKS = 1
-    COLLIDE_DIST = 1.99
-
-    HORIZONTAL = 1
-    VERTICAL = 2
+import GameOptions as options
 
 
 class ShipBase:
     def __init__(self):
         self._start_point = Point(None, None)
-        self._orientation = GameOptions.HORIZONTAL
+        self._orientation = options.HORIZONTAL
         self._length = 1
-        self._hitted_cells = []
-        self._is_move = True
+        self._cells = []
+        self.is_move = True
 
 
 class Ship(ShipBase):
     def __init__(self):
         super().__init__()
+
+    def __repr__(self):
+        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, ' \
+               f'id = {id(self)}'
+
+    def __str__(self):
+        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, ' \
+               f'id = {id(self)}'
 
     @property
     def length(self):
@@ -38,7 +35,7 @@ class Ship(ShipBase):
 
     @orientation.setter
     def orientation(self, value):
-        if value in (GameOptions.HORIZONTAL, GameOptions.VERTICAL):
+        if value in (options.HORIZONTAL, options.VERTICAL):
             self._orientation = value
 
     @property
@@ -57,14 +54,14 @@ class Ship(ShipBase):
     # --------------------------------------------- TO THINK
 
     def reverse_orientation(self):
-        if self.orientation == GameOptions.HORIZONTAL:
-            self.orientation = GameOptions.VERTICAL
+        if self.orientation == options.HORIZONTAL:
+            self.orientation = options.VERTICAL
         else:
-            self.orientation = GameOptions.HORIZONTAL
+            self.orientation = options.HORIZONTAL
 
     def move(self, step):
-        if self._is_move:
-            if self.orientation == GameOptions.HORIZONTAL:
+        if self.is_move:
+            if self.orientation == options.HORIZONTAL:
                 self.move_x(step)
             else:
                 self.move_y(step)
@@ -80,7 +77,7 @@ class Ship(ShipBase):
             for cell_first_ship, cell_second_ship in product(self.get_all_cells_of_ship(),
                                                              ship.get_all_cells_of_ship()):
                 dist_between_cells = distance(cell_first_ship, cell_second_ship)
-                if dist_between_cells < GameOptions.COLLIDE_DIST:
+                if dist_between_cells < options.COLLIDE_DIST:
                     return True
         return False
 
@@ -93,7 +90,7 @@ class Ship(ShipBase):
 
     def get_all_cells_of_ship(self) -> List[Point]:
         out = []
-        if self.orientation == GameOptions.HORIZONTAL:
+        if self.orientation == options.HORIZONTAL:
             for step in range(self.length):
                 out.append(Point(self.start_point.x + step, self.start_point.y))
         else:
@@ -101,13 +98,14 @@ class Ship(ShipBase):
                 out.append(Point(self.start_point.x, self.start_point.y + step))
         return out
 
-    def __repr__(self):
-        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, ' \
-               f'id = {id(self)}'
+    def destroy_deck_on(self, point: Point):
+        for index, cell in enumerate(self.get_all_cells_of_ship()):
+            if cell == point:
+                self._cells[index] = options.DESTROYED_CELL
+                break
 
-    def __str__(self):
-        return f'Ship with {self.length} decks, coords: x = {self.start_point.x}, y = {self.start_point.y}, ' \
-               f'id = {id(self)}'
+    def is_destroyed(self):
+        return all(self._cells)
 
 
 class OneDeckShip(Ship):
@@ -136,3 +134,10 @@ class FourDeckShip(Ship):
         super().__init__()
         self._length = 4
         self._cells = [0, 0, 0, 0]
+
+
+if __name__ == "__main__":
+    ship = TwoDeckShip()
+    ship._cells[0] = options.DESTROYED_CELL
+    ship._cells[1] = options.DESTROYED_CELL
+    print(ship.is_destroyed())
