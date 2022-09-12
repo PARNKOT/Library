@@ -1,7 +1,7 @@
 import tkinter
 
 import gui
-import gamepole as sb
+import gamepole as 
 import utils
 from functools import partial
 
@@ -33,7 +33,7 @@ class SeaBattle:
         for row_index in range(10):
             for column_index in range(10):
                 gamepolegui.cells[row_index][column_index].configure(
-                    command=partial(self.cell_pressed, sb.Point(column_index, row_index)),
+                    command=partial(self.cell_pressed, utils.Point(column_index, row_index)),
                     state='disabled')
 
     def generate_and_draw_ships(self):
@@ -61,7 +61,7 @@ class SeaBattle:
         for ship in self.gp2.get_ships():
             self.gui_app.gamepolegui_player2.draw_ship(ship)
 
-    def cell_pressed(self,  point: sb.Point):
+    def cell_pressed(self,  point: utils.Point):
         self.hit(point)
         if not self.referee():
             self.move_and_redraw_ships()
