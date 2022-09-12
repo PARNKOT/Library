@@ -8,7 +8,7 @@ from ship import (
         ThreeDeckShip,
         FourDeckShip,
     )
-from GamePoleOwner import ShipsMover, ShipConstellator
+from gamepoleowner import ShipsMover, ShipConstellator
 from utils import Point
 
 
