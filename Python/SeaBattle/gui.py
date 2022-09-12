@@ -1,6 +1,7 @@
 import tkinter as tk
-from tkinter import ttk
-from utils import Point
+from tkinter import ttk, font
+
+import GameOptions as options
 
 
 STYLES = {
@@ -15,23 +16,11 @@ STYLES = {
 
 class GuiOptions:
     MAINWINDOW_WIDTH = 650
-    MAINWINDOW_HEIGHT = 700
+    MAINWINDOW_HEIGHT = 720
     MENU_WIDTH_PERCENT = 0.3
 
     SHIP_COLOR = 'red'
     HITTEDPOINT_COLOR = 'black'
-
-
-class NButton(ttk.Frame):
-    def __init__(self, parent):
-        super().__init__(parent)
-        self.propagate(False)
-        self.button = ttk.Button(self)
-        self.button.pack(expand=1)
-
-
-def stub(point: Point):
-    print(point)
 
 
 class GamePoleGui(ttk.Frame):
@@ -39,12 +28,13 @@ class GamePoleGui(ttk.Frame):
 
     def __init__(self, master):
         super().__init__(master)
+        self.is_hidden = False
+        self.is_enabled = False
 
         # Styles
         ttk.Style().configure('GamePole.TFrame', background='#f5f5f5')
         self.configure(style='GamePole.TFrame', padding=5)
         self.cells = [[ttk.Button(self) for _ in range(10)] for _ in range(10)]
-        self.is_enabled = False
 
         self.make_pole()
 
@@ -55,16 +45,13 @@ class GamePoleGui(ttk.Frame):
             for column in range(10):
                 self.cells[row][column].grid(row=row, column=column, ipady=3)
 
-    def draw_point(self, point: Point):
-            self.cells[point.y][point.x].configure(style=STYLES['ship_cell'])
-
-    def draw_ship(self, ship): #ship_points: Iterable):
-        for point in ship.get_all_cells_of_ship():
-            self.draw_point(point)
-
-#    def update(self):
-#        for ship in self.__connected_gamepole.get_ships():
-#            self.draw_ship(ship.get_all_cells_of_ship())
+    def draw_ship(self, ship):
+        for index, point in enumerate(ship.get_all_cells_of_ship()):
+            if ship._cells[index] == options.DESTROYED_CELL:
+                self.cells[point.y][point.x].configure(style=STYLES['hitted_cell'])
+            else:
+                if not self.is_hidden:
+                    self.cells[point.y][point.x].configure(style=STYLES['ship_cell'])
 
     def clear(self):
         for row in self.cells:
@@ -104,20 +91,26 @@ class MainWindow(tk.Tk):
 
         # Buttons
         self.start_button = ttk.Button(self.menu_frame)
+        self.stop_game = ttk.Button(self.menu_frame)
         self.random_button = ttk.Button(self.menu_frame)
 
         # Styles
         ttk.Style().configure('Menu.TFrame', background='green')
         ttk.Style().configure('Main.TFrame', background='#f5f5f5')
         ttk.Style().configure('Menu.TButton')
+        ttk.Style().configure('Main.TEntry', background='green')
         ttk.Style().map('Cell.TButton',
-                        background=[('!active', 'blue'), ('pressed', 'red'), ('active', 'white')],
+                        background=[('!active', 'blue'),
+                                    ('pressed', 'red'),
+                                    ('active', 'white')],
                         relief=tk.GROOVE)
+
         ttk.Style().map('ShipCell.TButton',
                         background=[('!active', GuiOptions.SHIP_COLOR),
                                     ('pressed', GuiOptions.SHIP_COLOR),
                                     ('active', GuiOptions.SHIP_COLOR)],
                         relief=tk.GROOVE)
+
         ttk.Style().map('HittedPoint.TButton',
                         background=[('!active', GuiOptions.HITTEDPOINT_COLOR),
                                     ('pressed', GuiOptions.HITTEDPOINT_COLOR),
@@ -127,6 +120,8 @@ class MainWindow(tk.Tk):
         # GamePoles
         self.gamepolegui_player1 = GamePoleGui(self.main_frame)
         self.gamepolegui_player2 = GamePoleGui(self.main_frame)
+
+        self.status = tk.Entry(self.main_frame, width=200, justify=tk.CENTER, foreground='white', font=font.ITALIC)
 
     def init_frames(self):
         # Configuring
@@ -141,13 +136,16 @@ class MainWindow(tk.Tk):
         self.main_frame.pack(side=tk.LEFT, fill='both')
 
     def init_buttons(self):
-        self.start_button.configure(text='START')
+        self.start_button.configure(text='START', state='disabled')
         self.start_button.pack(fill='x', ipady=50, pady=10)
+        self.stop_game.configure(text='STOP GAME')
+        self.stop_game.pack(fill='x', ipady=50, pady=10)
         self.random_button.configure(text='GENERATE SHIPS')
         self.random_button.pack(fill='x', ipady=50, pady=10)
 
     def init_gamepoles(self):
         self.gamepolegui_player1.pack(side=tk.TOP)
+        self.status.pack(side=tk.TOP, padx=20, ipady=10)
         self.gamepolegui_player2.pack(side=tk.BOTTOM)
 
     def run(self):
