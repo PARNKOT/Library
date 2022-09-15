@@ -26,4 +26,17 @@
    Доступ через объект current_app
 
 # Ответ сервера и перехват запросов
-1) 
+1) from flask import make_response, redirect, abort
+2) Ответы могут быть трех типов:
+    - В виде строки: return "string"
+    - Объект ответа: return make_response("body", status_code, headers)
+    - Кортеж:        return ("string", status_code, headers) //type(headers) = dict
+3) response = make_response("string", 200)
+    - response.headers["header"] = value
+    - response.set_cookie("string", "string", keep_alive)
+    - return response
+4) return redirect("address")
+5) @app.before_request()
+    - def before_request():
+6) @app.after_request()
+    - def after_request(response): ... return response
