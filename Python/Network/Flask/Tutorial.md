@@ -1,7 +1,7 @@
 # Основы
 1) from flask import Flask
 2) Создание экземпляра приложения:
-    app = Flask(__name__)
+    - app = Flask(__name__)
     // __name__ используется flask'ом для поиска файлов
 3) Запуск приложения:
     - app.run()
@@ -21,7 +21,7 @@
    Возможно использование объекта request
    - request.remote_addr
    - request.remote_user
-     ...
+   - ...
 3) Также существует контекст приложения
    Доступ через объект current_app
 
