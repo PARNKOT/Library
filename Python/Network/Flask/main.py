@@ -1,11 +1,13 @@
 from flask import Flask, request, make_response, redirect, abort
+from flask import render_template
+from jinja2 import Template
 
 
 app = Flask(__name__)
 
 
-@app.route('/')
-def index():
+@app.route('/index1')
+def index1():
     return "Hello, world!"
 
 
@@ -71,6 +73,13 @@ def error404handler(error):
     return "<h1>OMG, it is 404!</h1>"
 
 
+@app.route('/')
+def index():
+    # t = Template('templates/index.html')
+    return render_template('index.html', name='Egor')
+
+
 if __name__ == '__main__':
     print(app.url_map)
     app.run(debug=True)
+
