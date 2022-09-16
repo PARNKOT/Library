@@ -43,10 +43,3 @@
 7) @app.errorhandler(status_code)
     - def errorhandler(error):
 8) abort("string")
-
-# Шаблоны
-1) from flask import render_template
-2) Используется шаблонизатор jinja2
-3) Шаблонизатор заменяет в файле динамические компоненты на статические
-    - {{ component }}
-4) return render_template("file", **kwargs) // kwargs = {component: value, ... }
