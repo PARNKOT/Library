@@ -14,6 +14,15 @@
     // converter: int, string, float, path, uuid
     // var: имя переменной
     // app.url_map: список маршрутов
+5) Функция url_for()  
+    Возвращает URL адрес для конечной функции  
+> `@app.route('/')`  
+> `def index():`  
+> `...return response`  
+>   
+> `url_for('index')`  
+> `>>> '/'`
+
 
 # Контексты
 1) from flask import request, current_app
