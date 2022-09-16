@@ -1,10 +1,9 @@
 from flask import Flask, request, make_response, redirect, abort
-from flask import render_template
+from flask import render_template, url_for
 from jinja2 import Template
+from forms import ContactForm, LoginForm
 
-
-app = Flask(__name__)
-
+from main import app
 
 @app.route('/index1')
 def index1():
@@ -79,7 +78,43 @@ def index():
     return render_template('index.html', name='Egor')
 
 
-if __name__ == '__main__':
-    print(app.url_map)
-    app.run(debug=True, host="localhost", port=5050)
+@app.route('/login', methods=['post', 'get'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        login_ = form.user.data
+        password = form.user.data
 
+        if login_ == 'root' and password == 'password':
+            return redirect(url_for('index'))
+        else:
+            return error404handler(None)
+
+    return render_template('login_nice.html', form=form)
+    #message = ''
+    #if request.method == 'POST':
+    #    username = request.form.get('user')
+    #    password = request.form.get('password')
+
+    #    if username == 'root' and password == 'password':
+    #        message = 'Correct username and password'
+    #        return redirect(url_for('index'))
+    #    else:
+    #        message = 'Wrong username or password'
+
+
+@app.route('/contact/', methods=['get', 'post'])
+def contact():
+    form = ContactForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        message = form.message.data
+        print(name)
+        print(email)
+        print(message)
+        # здесь логика базы данных
+        print("\nData received. Now redirecting ...")
+        return redirect(url_for('contact'))
+
+    return render_template('contact.html', form=form)

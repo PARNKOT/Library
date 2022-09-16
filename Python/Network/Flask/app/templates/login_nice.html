@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]> <html class="lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]> <html class="lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<title>Parnkot</title>
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+	<link rel="icon" href="http://vladmaxi.net/favicon.ico" type="image/x-icon">
+	<link rel="shortcut icon" href="http://vladmaxi.net/favicon.ico" type="image/x-icon">
+	<!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+</head>
+<body>
+
+
+
+
+  <section class="container">
+    <div class="login">
+      <h1>Войти в личный кабинет</h1>
+
+        <form action="" method="post">
+
+            {{ form.csrf_token() }}
+
+            {% for field in form if field.name != "csrf_token" and field.name != "remember_me" %}
+            <p>{{ field }}
+                {% for error in field.errors %}
+                {{ error }}
+                {% endfor %}
+            </p>
+            {% endfor %}
+        <p class="remember_me">
+            <label>
+                {{ form.remember_me }}
+            </label>
+            </p>
+        </form>
+    <!--
+      <form method="post" action="">
+        <p><input type="text" name="user" value="" placeholder="Логин или Email"></p>
+        <p><input type="password" name="password" value="" placeholder="Пароль"></p>
+        <p class="remember_me">
+          <label>
+            <input type="checkbox" name="remember_me" id="remember_me">
+            Запомнить меня
+          </label>
+        </p>
+        <p class="submit"><input type="submit" name="commit" value="Войти"></p>
+      </form>
+    -->
+    </div>
+    <div class="login-help">
+      <a href="index.html">Забыли пароль?</a> Восстановите его!
+    </div>
+  </section>
+</body>
+</html>
