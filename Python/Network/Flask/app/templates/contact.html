@@ -6,6 +6,8 @@
 </head>
 <body>
 
+{{ get_flashed_messages() }}
+
 <form action="" method="post">
 
     {{ form.csrf_token() }}

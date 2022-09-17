@@ -22,22 +22,21 @@
       <h1>Войти в личный кабинет</h1>
 
         <form action="" method="post">
-
             {{ form.csrf_token() }}
 
-            {% for field in form if field.name != "csrf_token" and field.name != "remember_me" %}
-            <p>{{ field }}
-                {% for error in field.errors %}
-                {{ error }}
-                {% endfor %}
+            {{ form.user }}
+            {{ form.password }}
+
+            <p class="remember_me">
+                <label>
+                    {{ form.remember_me }}
+                    Запомнить меня
+                </label>
             </p>
-            {% endfor %}
-        <p class="remember_me">
-            <label>
-                {{ form.remember_me }}
-            </label>
-            </p>
+
+                <p class="submit"> {{ form.commit }} </p>
         </form>
+
     <!--
       <form method="post" action="">
         <p><input type="text" name="user" value="" placeholder="Логин или Email"></p>

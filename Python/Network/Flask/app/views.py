@@ -1,5 +1,6 @@
 from flask import Flask, request, make_response, redirect, abort
 from flask import render_template, url_for
+from flask import flash
 from jinja2 import Template
 from forms import ContactForm, LoginForm
 
@@ -83,7 +84,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         login_ = form.user.data
-        password = form.user.data
+        password = form.password.data
 
         if login_ == 'root' and password == 'password':
             return redirect(url_for('index'))
@@ -108,13 +109,12 @@ def contact():
     form = ContactForm()
     if form.validate_on_submit():
         name = form.name.data
-        email = form.email.data
         message = form.message.data
         print(name)
-        print(email)
         print(message)
         # здесь логика базы данных
         print("\nData received. Now redirecting ...")
+        flash("Message received", "succeed")
         return redirect(url_for('contact'))
 
     return render_template('contact.html', form=form)
