@@ -1,5 +1,5 @@
 ## 1. Создание классов форм
-> > `from flask_wtf import FlaskForm`  
+> `from flask_wtf import FlaskForm`  
 >
 > `from wtforms import StringField, SubmitField, TextAreaField, PasswordField, RadioField, BooleanField`  
 >
