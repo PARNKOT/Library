@@ -12,3 +12,4 @@
 
 ## 3. Шаблоны с формами
 ![img.png](images/forms3.png)
+![img.png](images/forms4.png)
