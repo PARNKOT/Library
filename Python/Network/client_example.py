@@ -9,7 +9,13 @@ def connect(data):
         sock.connect(('localhost', 9999))
         sock.sendall(data)
 
-        received = sock.recv(1024*100)
+        received = b''
+        while True:
+            recv = sock.recv(1024)
+            if recv:
+                received += recv #sock.recv(1024)
+            else:
+                break
 
 
     print(f"Sent size = {len(data)} bytes: {data}")
@@ -23,7 +29,7 @@ with open("images/image.png", "rb") as image:
     # encode
     bytes_array = base64.encodebytes(image.read())
 
-    # send and receive
+    # send and receivev
     message = connect(bytes_array)
 
     # decode
