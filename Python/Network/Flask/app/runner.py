@@ -1,4 +1,4 @@
-import main, views
+import views
 
 if __name__ == "__main__":
-    main.app.run()
+    views.app.run()
