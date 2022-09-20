@@ -1,6 +1,7 @@
 from flask import Flask, request, make_response, redirect, abort
 from flask import render_template, url_for
 from flask import flash
+from flask import session
 from jinja2 import Template
 from forms import ContactForm, LoginForm
 
@@ -118,3 +119,31 @@ def contact():
         return redirect(url_for('contact'))
 
     return render_template('contact.html', form=form)
+
+@app.route('/visits-counter/')
+def visits():
+    if 'visits' in session:
+        session['visits'] = session.get('visits') + 1
+    else:
+        session['visits'] = 1
+    return f"Total visits: {session.get('visits')}"
+
+
+@app.route('/delete-visits/')
+def delete_visits():
+    session.pop('visits', None)
+    return "Visits deleted"
+
+
+@app.route('/session/')
+def updating_session():
+    res = str(session.items())
+
+    cart_item = {'pineapples': '10', 'apples': '20', 'mangoes': '30'}
+    if 'cart_item' in session:
+        session['cart_item']['pineapples'] = '100'
+        session.modified = True
+    else:
+        session['cart_item'] = cart_item
+
+    return res
