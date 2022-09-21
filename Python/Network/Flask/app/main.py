@@ -12,8 +12,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-
-if __name__ == '__main__':
-    print(app.url_map)
-    app.run(debug=True, host="localhost", port=5050)
+#if __name__ == '__main__':
+#    print(app.url_map)
+#    app.run(debug=True, host="localhost", port=5050)
 

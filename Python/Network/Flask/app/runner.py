@@ -1,4 +1,5 @@
 import views
+from views import app
 
 if __name__ == "__main__":
-    views.app.run()
+    app.run()
