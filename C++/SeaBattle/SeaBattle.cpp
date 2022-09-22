@@ -7,5 +7,6 @@ int main(int argc, char** argv)
     std::string text;
     std::cin >> text;
     std::cout << "You have typed: " << text;
+    std::cout << "New text";
     return 0;
 } 
