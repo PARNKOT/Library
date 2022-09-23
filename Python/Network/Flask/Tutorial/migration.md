@@ -22,4 +22,7 @@
 # Automigration
 - > python -m flask -A .\runner.py db migrate -m "Message"  
 
-- > python -m flask -A .\runner.py db upgrade
+- > python -m flask -A .\runner.py db upgrade  
+
+## Ограничения автомиграции
+![img.png](images/migration2.png)
