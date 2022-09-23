@@ -1,4 +1,4 @@
-import views
+import views, models
 from views import app
 
 if __name__ == "__main__":
