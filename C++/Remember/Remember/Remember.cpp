@@ -6,8 +6,11 @@
 #include <vector>
 #include <stdlib.h>
 #include <algorithm>
+#include <new>
+#include <bitset>
 
 #include "duplicates.h"
+#include "sorts.h"
 
 using duplicate::eliminate_duplicates;
 using duplicate::func;
@@ -41,8 +44,48 @@ void funcTemp(C cls) {
     std::cout << C::varInt << ", " << C::varFloat;
 }
 
+int* funcPtr() {
+    int* a = new int;
+    std::cout <<  a << ", ";
+    return a;
+}
+
+template<class T>
+void print(T arg) {
+    std::cout << arg << std::endl;
+}
+
 
 int main() {
+
+    int size = 3;
+    int* p = (int*)std::malloc(size * sizeof(int));
+
+    for (int index = 0; index < size; index++) {
+        p[index] = index + 1;
+    }
+
+    p[0] = 65535;
+    p[1] = 65535;
+    p[2] = 65535;
+
+    auto p1 = (int*)((std::uint64_t)p + 1);
+    auto p2 = (int*)((std::uint64_t)p + 2);
+    auto p3 = (std::uint8_t*)((std::uint64_t)p + 3);
+    auto p4 = (std::uint8_t*)((std::uint64_t)p + 4);
+    auto p5 = (std::uint8_t*)((std::uint64_t)p + 5);
+    //*p1 = 21;
+    //*p2 = 1;
+    //*p3 = 0;
+    //*p4 = 0;
+    //*p5 = 0;
+    std::bitset<32> x(*p2);
+    print(x);
+    print(p1);
+    print(p2);
+
+    
+
 
     /*
     func();
@@ -56,12 +99,26 @@ int main() {
 
     //MyClass my = MyClass();
     //funcTemp(my);
+    
+    //int *a = funcPtr();
+    //std::cout << a;
+    //delete a;
 
-    int a = 10;
-    bool* b;
-    b = (bool*)&a;
-    std::cout << "a: " << &a << std::endl;
-    std::cout << "b: " << b-1 << ", " << (int)(*(b-1));
+    /*/
+    auto vector = std::vector<int>(10);
+    vector = { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 };
+    sorts::combosort(vector.begin(), vector.end());
+
+    for (auto el : vector) {
+        std::cout << el << ", ";
+    }
+    std::cout << std::endl;
+
+    auto var = new int(3);
+    std::cout << *var;
+    //sorts::combosort();
+    */
+    
 }
 
 

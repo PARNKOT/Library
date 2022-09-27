@@ -21,9 +21,15 @@
     <ClCompile Include="duplicates.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
+    <ClCompile Include="sorts.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="duplicates.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sorts.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

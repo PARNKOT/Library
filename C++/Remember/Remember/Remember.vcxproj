@@ -130,9 +130,11 @@
   <ItemGroup>
     <ClCompile Include="duplicates.cpp" />
     <ClCompile Include="Remember.cpp" />
+    <ClCompile Include="sorts.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="duplicates.h" />
+    <ClInclude Include="sorts.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
