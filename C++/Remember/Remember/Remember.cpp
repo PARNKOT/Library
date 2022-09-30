@@ -58,6 +58,9 @@ void print(T arg) {
 
 int main() {
 
+
+
+    /*
     int size = 3;
     int* p = (int*)std::malloc(size * sizeof(int));
 
@@ -83,8 +86,8 @@ int main() {
     print(x);
     print(p1);
     print(p2);
-
-    
+    int a[2] = { 1, 2 };
+    */
 
 
     /*

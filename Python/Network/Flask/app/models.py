@@ -32,7 +32,7 @@ class User(db.Model):
 if __name__ == "__main__":
     db.create_all()
     #db.session.add(User(username="Egor", email="atomic14@mail.ru"))
-    db.session.add(Post(title='Rise', slug='Nice', content='I love rise', author=1))
+    #db.session.add(Post(title='Rise', slug='Nice', content='I love rise', author=1))
     db.session.commit()
 
     users = User.query.all()
