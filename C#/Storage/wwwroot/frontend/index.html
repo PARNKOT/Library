@@ -1,0 +1,88 @@
+<!DOCTYPE html><html lang="ru"><head>
+    <meta charset="utf-8">
+    <title>$BRAND_NAME</title>
+    <base href="/">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="./images/aerodetector_logo_color.svg" media="(prefers-color-scheme: light)">
+    <link rel="icon" type="image/x-icon" href="./images/aerodetector_logo_white.svg" media="(prefers-color-scheme: dark)">
+    <script src="frontend-config.js"></script>
+<style>:root{--safe-zone-width:80px;--working-area-width:1000px;--action-buttons-margin-right:75px;--action-buttons-margin-bottom:75px;--color-work-area:#fafafa;--color-sidenav-background:#fff;--color-sidenav-toggle-button-background-default:rgba(103,58,179,0.1);--color-sidenav-toggle-button-background-hover:rgba(103,58,179,0.2);}body{position:fixed;margin:0;background-color:#fafafa;height:100%;width:100%;overflow:hidden;font-family:Roboto,Arial,Helvetica,sans-serif;}</style><link rel="stylesheet" href="styles.508741c092edfd47a51c.css" media="print" onload="this.media='all'"><noscript><link rel="stylesheet" href="styles.508741c092edfd47a51c.css"></noscript></head>
+<body id="ad-app">
+    <style>
+        @keyframes pulse {
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        .app-loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 9999;
+            display: flex;
+            width: 100%;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s linear;
+            background-color: rgb(255, 255, 255);
+            color: #673AB7;
+        }
+
+        .app-loading.hidden{
+            opacity: 0;
+        }
+
+        .app-loading .static-content {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            font-family: Roboto, Arial, Helvetica, sans-serif;
+            font-size: 25px;
+            opacity: 0.9;
+        }
+
+        .app-loading .static-content span {
+            display: block;
+            width: 100%;
+        }
+
+        .app-loading .static-content span.title {
+            padding-bottom: 20px;
+            font-size: 30px;
+        }
+
+        .app-loading .static-content span.loading{
+            padding-top: 30px;
+            animation: pulse 1.5s infinite linear;
+        }
+
+        .app-loading .static-content img {
+            /* width: 75px;
+            height: 75px;
+            border: 2px solid rgb(0, 0, 0);
+            border-radius: 50%; */
+            align-self: center;
+            height: 110px;
+            opacity: 0.87;
+
+            /* filter: drop-shadow(0px 0px 5px black); */
+        }
+    </style>
+
+    <ad-root></ad-root>
+
+    <div class="app-loading">
+        <div class="static-content">
+            <span class="title">$BRAND_NAME</span>
+            <img src="/images/aerodetector_logo_color.svg" alt="" media="(prefers-color-scheme: light)">
+            <img src="/images/aerodetector_logo_white.svg" alt="" media="(prefers-color-scheme: dark)">
+            <!-- <span i18n="App loading caption|Loading caption on welcome page@@loadingCaption" class="loading">Loading</span> -->
+        </div>
+    </div>
+<script src="runtime-es2015.79f7b01b46f9eba0f264.js" type="module"></script><script src="runtime-es5.79f7b01b46f9eba0f264.js" nomodule defer></script><script src="polyfills-es5.47098f87219cae583be1.js" nomodule defer></script><script src="polyfills-es2015.99294adef5bd920e2097.js" type="module"></script><script src="scripts.e568bb0a996c4851641a.js" defer></script><script src="main-es2015.2bc7b9707fc99a6e2018.js" type="module"></script><script src="main-es5.2bc7b9707fc99a6e2018.js" nomodule defer></script>
+
+
+</body></html>
