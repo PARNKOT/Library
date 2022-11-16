@@ -27,3 +27,4 @@ print("Улица:", adrRU.street_name())
 >>> Координаты: {'longitude': 147.145121, 'latitude': 3.138188}
 >>> Улица: Eutaw
 
+ 
