@@ -1,0 +1,29 @@
+Часто для проверки работы алгоритмов нужно собрать достаточно данных, чтобы на них тестировать.   
+Создание данных вручную занимает очень много времени, для избавления от этой рутины может помочь модуль mimesis,   
+который умеет генерировать рандомные данные по нескольким критериям. Устанавливается он просто выполнив: pip install mimesis.   
+При помощи данного модуля можно генерировать различные данные на различных языках, например:   
+   
+`
+import mimesis
+from mimesis import Address
+
+adrRU = Address(mimesis.locales.RU)
+print("Адрес:", adrRU.address())
+print("Город:", adrRU.city())
+print("Координаты:", adrRU.coordinates())
+print("Улица:", adrRU.street_name())
+>>> Адрес: ул. Лихоборская 73
+>>> Город: Волгореченск
+>>> Координаты: {'longitude': -44.258845, 'latitude': 50.719573}
+>>> Улица: Украинская
+
+adrRU = Address(mimesis.locales.EN)
+print("Адрес:", adrRU.address())
+print("Город:", adrRU.city())
+print("Координаты:", adrRU.coordinates())
+print("Улица:", adrRU.street_name())
+>>> Адрес: 858 Navajo Gate
+>>> Город: Philadelphia
+>>> Координаты: {'longitude': 147.145121, 'latitude': 3.138188}
+>>> Улица: Eutaw
+`
