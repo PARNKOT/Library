@@ -22,7 +22,7 @@ def send_message(exchange="", routing_key=""):
                                    routing_key=routing_key,
                                    body=bytes(f"{template.format(name=random.choice(names))}", encoding="utf-8"))
 
-        time.sleep(0.2)
+        time.sleep(1)
 
 
 def receive_message(queue_name=""):
@@ -59,9 +59,9 @@ def bind_exchange(exchange: str, queue: str, routing_key=""):
 
 
 if __name__ == "__main__":
-    #create_queue("work_queue")
-    #create_exchange("worker")
-    #bind_exchange("worker", "work_queue", routing_key="work")
+    create_queue("work_queue")
+    create_exchange("worker")
+    bind_exchange("worker", "work_queue", routing_key="work")
 
     sending_thread = threading.Thread(target=send_message, args=("worker", "work"), name="SendingThread")
     consumers_processes = [multiprocessing.Process(target=receive_message, args=("work_queue",),
