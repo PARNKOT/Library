@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        form {
+            display: flex;
+            flex-direction: column;
+            width: 30%;
+        }
+    </style>
+</head>
+<body>
+    <form action="{% url 'mainApp:new_project' %}" method="post">
+    {% csrf_token %}
+        <input type="number" style="margin: 5px" name="number">
+        <input type="text" style="margin: 5px" name="text">
+        <input type="datetime-local" style="margin: 5px" name="data">
+        <input type="submit" value="Vote" style="margin: 5px">
+    </form>
+</body>
+</html>

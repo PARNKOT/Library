@@ -36,13 +36,27 @@ def receive_and_run_func():
         server.serve_forever()
 
 
+def decor(func):
+    def wrapper(arg):
+        func()
+
+    wrapper.__name__ = func.__name__
+    return wrapper
+
+
+def func(arg: slice):
+    print(type(arg))
+    print(arg.start)
+
+
 if __name__ == "__main__":
-    server_process = Process(target=receive_and_run_func, name="ServerProcess")
-    client_process = Process(target=send_func, name="ClientProcess")
-
-    server_process.start()
-    client_process.start()
-
-    time.sleep(5)
-    server_process.terminate()
-    client_process.terminate()
+    func(slice(1, 3, 1))
+    # server_process = Process(target=receive_and_run_func, name="ServerProcess")
+    # client_process = Process(target=send_func, name="ClientProcess")
+    #
+    # server_process.start()
+    # client_process.start()
+    #
+    # time.sleep(5)
+    # server_process.terminate()
+    # client_process.terminate()

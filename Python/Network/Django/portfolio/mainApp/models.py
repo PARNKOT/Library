@@ -8,7 +8,7 @@ class Project(models.Model):
     last_updated = models.DateTimeField("last update")
 
     def __str__(self):
-        return f"|Project#{self.number};{self.name}; {self.last_updated}|"
+        return f"Project#{self.number};{self.name}; {self.last_updated}"
 
     def __repr__(self):
         return self.__str__()
