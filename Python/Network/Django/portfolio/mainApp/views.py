@@ -4,9 +4,10 @@ from django.template import loader
 from .models import Project
 
 # Create your views here.
+
+
 def index(request):
-    return http.HttpResponse("Hello!<br>My nickname is Parnkot<br>Welcome to my portfolio!<br>"
-                             "<a href='/projects'>Projects</a>")
+    return render(request, "mainApp/title.html")
 
 
 def index_json(request):
