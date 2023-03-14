@@ -1,0 +1,50 @@
++================================+
+|            Windows             |
++================================+
+
+If using venv:
+
+1) Скачать Apache (httpd) from Apache Lounge (https://www.apachelounge.com/)
+2) Разархивировать и установить переменную окружения:
+	MOD_WSGI_APACHE_ROOTDIR="full_path/to/Apache24"
+	Example: C:\Egor\Apache\Apache24
+
+3) Установить mod_wsgi через pip
+
+	./venv/Scripts/python -m pip install mod_wsgi
+
+4) В настройках проекта Django (settings.py) добавить строчку "mod_wsgi.server" в INSTALLED_APPS:
+
+	INSTALLED_APPS = [
+            ...
+            "mod_wsgi.py",
+            ...
+        ]
+
+5) Узнать настройки для "httpd.conf". Для этогу запустить команду:
+
+	[in]: ./venv/Scripts/mod_wsgi-express module-config
+Example [out]:
+		LoadModule wsgi_module "C:/Egor/Python/Library/Python/Network/Django/venv/lib/site-packages/mod_wsgi/server/mod_wsgi.cp310-win_amd64.pyd"
+		WSGIPythonHome "C:/Egor/Python/Library/Python/Network/Django/venv"
+
+6) Отредактировать файл "Apache24/conf/httpd.conf". Необходимо вставить строчки из пункта 5 и добавить новые:
+
+	Example:
+		LoadModule wsgi_module "C:/Egor/Python/Library/Python/Network/Django/venv/lib/site-packages/mod_wsgi/server/mod_wsgi.cp310-win_amd64.pyd"
+		WSGIPythonHome "C:/Egor/Python/Library/Python/Network/Django/venv"		
+		WSGIScriptAlias / C:/Egor/Python/Library/Python/Network/Django/portfolio/portfolio/wsgi.py
+		WSGIPythonPath "C:/Egor/Python/Library/Python/Network/Django/portfolio"
+
+		<Directory C:/Egor/Python/Library/Python/Network/Django/portfolio>
+		 <Files wsgi.py>
+		  Require all granted
+		 </Files>
+		</Directory>
+
+
+WSGIPythonHome "path/to/venv"
+WSGIScriptAlias "path/to/wsgi.py"
+WSGIPythonPath "path/to/DjangoProject"
+
+ 
