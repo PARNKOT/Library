@@ -1,4 +1,4 @@
-        ================= Start =================
+================= Start =================
 
 - django-admin startproject <project_name> - создать проект
 - python manage.py startapp <app_name> - создать приложение внутри проекта
