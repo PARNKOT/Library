@@ -23,6 +23,10 @@ li a {
 }
 
 .biography .info {
+    display: flex;
+    height: 200px;
+    align-items: center;
+    justify-content: space-around;
     font-size: 20pt;
     background-color: ghostwhite;
     padding: 5px;
