@@ -11,3 +11,28 @@ li a {
     color: #ffc877;
     font-size: 15pt;
 }
+
+.biography {
+    width: 30%;
+}
+
+.biography .photo-container img{
+    width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 25%);
+}
+
+.biography .info {
+    font-size: 20pt;
+    background-color: ghostwhite;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 25%);
+}
+
+.biography .projects-ref {
+    font-size: 30pt;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}

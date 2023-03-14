@@ -5,9 +5,16 @@ from .models import Project
 
 # Create your views here.
 
+biography = """
+Hello! My name is Egor<br/>
+My nickname is Parnkot<br>
+I am programmer<br>
+Welcome to my portfolio!<br>
+"""
+
 
 def index(request):
-    return render(request, "mainApp/title.html")
+    return render(request, "mainApp/title.html", context={"biography": biography})
 
 
 def index_json(request):

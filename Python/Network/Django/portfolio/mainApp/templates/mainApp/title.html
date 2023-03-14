@@ -8,9 +8,17 @@
     <link rel="stylesheet" type="text/css" href="{% static 'mainApp/styles.css' %}">
 </head>
 <body>
-  Hello!<br>
-  My nickname is Parnkot<br>
-  Welcome to my portfolio!<br>
-  <a href='/projects'>Projects</a>
+
+<div class="biography">
+    <div class="photo-container">
+        <img src="{% static 'mainApp/images/Egor.jpg' %}">
+    </div>
+    <div class="info">
+        {{ biography | safe }}
+    </div>
+    <span  class="projects-ref">
+      <a href='/projects'>Projects</a>
+    </span>
+</div>
 </body>
 </html>
