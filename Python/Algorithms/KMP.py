@@ -1,5 +1,6 @@
 # Алгоритм КМП (Кнута-Морриса-Пратта)
 # Поиск образа в строке
+
 import typing
 
 
@@ -50,7 +51,6 @@ class FindString:
 def kmp(src: str, to_find: typing.Union[str, FindString]):
     n, m = len(src), len(to_find)
     i, j = 0, 0
-    pi_array = []
 
     if isinstance(to_find, str):
         pi_array = FindString.calculate_pi_array(to_find)
