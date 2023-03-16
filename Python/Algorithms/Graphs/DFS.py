@@ -1,4 +1,4 @@
-Алгоритм поиска в глубину
+#Алгоритм поиска в глубину
 
 def DFS(start_node, key):
     next_nodes = []
@@ -18,10 +18,10 @@ def DFS(start_node, key):
     return None
 
 
+# For example:
 
-For example:
-    
-    class NodeIterator:
+
+class NodeIterator:
     def __init__(self, node):
         self.node = node
         self.count = 0
