@@ -1,0 +1,128 @@
+================= Start =================
+
+- django-admin startproject <project_name> - создать проект
+- python manage.py startapp <app_name> - создать приложение внутри проекта
+- python manage.py shell - запустить командную оболочку
+
+        ================= Databases and Models =================
+
+- Модели (они же таблицы в БД) создаются в каждом приложении в файле models.py
+
+- Запросы в БД:
+  <model_name (class_name)>.objects.<command>
+
+  Примеры:
+
+  Phone.objects.all() - выбрать все экземпляры модели Phone из БД
+  Phone.objects.filter(id=1) - возвращает отфильтрованный список. Не выбрасывает исключение, если отсутствует экземпляры,
+                               подходящие под условия фильтрации
+  Phone.objects.get(id=3) - выбрать элементы из БД. Выбрасывает исключение, если ничего не найдено
+
+- python manage.py makemigrations - обновить список миграций для БД
+
+- python manage.py migrate - выполняет миграции
+
+- python manage.py sqlmigrate <app_name> <migration_number> - выводит миграцию в виде SQL команд
+
+        ================= Admin =================
+
+- python manage.py createsuperuser - создать суперпользователя
+
+  Примечание:
+  Если в приложении были добавлены модели, то необходимо включить соответствующие приложения в настройки проекта
+
+  INSTALLED_APPS = [
+    '{app_name}.apps.{app_name}Config',
+    ...
+  ]
+
+        ================= Views (представления) =================
+
+- Функции для обработки запросов создаются в каждом приложении в файле views.py
+
+- Связывание urls и функций необходимо делать в каждом приложении в файле urls.py (создается самостоятельно), а в
+  файле проекта urls.py включается все необходимые файлы приложений
+
+  Пример:
+  mainApp/urls.py:
+
+      urlpatterns = [
+        path("", views.index),
+        path("json", views.index_json),
+      ]
+
+  Project/urls.py:
+
+      urlpatterns = [
+        path('admin/', admin.site.urls),
+        path("", include("mainApp.urls")),
+      ]
+
+- Передача аргументов в строке url
+  Примеры:
+
+  /phone/<int:phone_number>
+
+- return django.shortcuts.render(request, <path_to_template>, context) - короткий вариант рендера шаблона
+
+- Чтобы ответить ошибкой 404, надо написать:
+
+    raise django.http.Http404()
+
+- Для создания пространства имен (в приложении) необходимо объявить переменную в файле urls.py
+
+  app_name="<app_name>"
+
+
+        ================= Шаблонизатор =================
+
+- Шаблонизатор
+  {%%} - управляющая конструкция
+  {{}} - конструкция контекста (для переменных)
+
+  Пример:
+
+      {% if projects_list %}
+        <ul>
+        {% for project in projects_list %}
+            <li><a href="/projects/{{ project.id }}">{{ project }}</a></li>
+        {% endfor %}
+        </ul>
+      {% else %}
+          <p>No projects are available.</p>
+      {% endif %}
+
+- template = django.template.loader.get_template(<path_to_template>)
+  return template.render(context, request)
+
+  context = словарь, где ключи - имена переменных, значения - переменные
+
+  <path_to_template> - как пример "mainApp/index"
+  Необходимо в папке приложения создать каталог templates и внутри каталога создать еще один с названием приложения (так принято)
+
+
+- {% url 'view_name' %} - возвращает путь для вида. ( path("url", views.method, name="view_name") )
+
+
+        ================= Тестирование =================
+
+- Тесты создаются в файле tests.py каждого приложения.
+
+- python manage.py test <app_name> - запуск тестов
+
+- Для создания тестов необходимо определить класс, унаследованный от django.test.TestCase.
+  Тестирующие функции в классе должны начинаться со слова "test"
+
+- ВАЖНО: тесты используют собственную базу, поэтому для них надо создавать отдельные экземпляры моделей
+
+
+        ================= Статические файлы =================
+
+- Статические файлы. Необходимо создать в приложении папку static/<app_name> и в неё помещать статические файлы
+
+- Для обращения к статическим файлам в шаблоне HTML пишутся следующие строки:
+
+  {% load static %}
+
+  Пример: <link ... href="{% static '<app_name>/<static_file>' %}">
+
