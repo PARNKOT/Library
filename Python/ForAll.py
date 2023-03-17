@@ -1,3 +1,5 @@
+import copy
+import itertools
 import pickle
 import socket
 import socketserver
@@ -50,13 +52,12 @@ def func(arg: slice):
 
 
 if __name__ == "__main__":
-    func(slice(1, 3, 1))
-    # server_process = Process(target=receive_and_run_func, name="ServerProcess")
-    # client_process = Process(target=send_func, name="ClientProcess")
-    #
-    # server_process.start()
-    # client_process.start()
-    #
-    # time.sleep(5)
-    # server_process.terminate()
-    # client_process.terminate()
+    l1 = (1, 2, 3, 7)
+    l2 = (4, 5, 6)
+    l3 = tuple(zip(l1, l2))
+    l4 = tuple(itertools.zip_longest(l1, l2, fillvalue=0))
+
+    print(l3)
+    print(l4)
+
+    print(sorted({"6": 1, "2": 2, "1": 1}))
