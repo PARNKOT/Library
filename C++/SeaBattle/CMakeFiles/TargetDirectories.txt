@@ -1,9 +1,0 @@
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/Experimental.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/Nightly.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/Continuous.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/NightlyMemoryCheck.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/SeaBattleGame.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/PACKAGE.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/RUN_TESTS.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/ALL_BUILD.dir
-C:/Egor/Python/Library/C++/SeaBattle/CMakeFiles/ZERO_CHECK.dir
