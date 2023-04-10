@@ -1,0 +1,59 @@
+import cv2
+
+Functions:
+1) cv2.imread('PATH_TO_IMAGE') -> return IMAGE
+2) cv2.imshow('INSCRIPTION', IMAGE)
+    'INSCRIPTION' - надпись картинки
+    IMAGE - переменная картинки, которая может быть получена, например, через функцию imread
+3) cv2.waitKey(delay)
+    delay, [milliseconds] - время отображения картинки. Если поставить delay=0, то бесконечно долго
+4) cv2.VideoCapture('PATH_TO_VIDEO') -> return VIDEOCAPTURE
+    В качестве аргумента может указываться число, которое соответствует номеру камеры, подключенной к компьютеру
+5) VIDEOCAPTURE.read() -> return (IsSuccess, IMAGE)
+6) VIDEOCAPTURE.set(id, value)
+    Устанавливает значение value для параметра (по его id)
+7) IMAGE.shape() - return (height, width, layers)
+    heigth, width, [pix] - высота и ширина картинки
+    layers - количество слоев (для RGB layers = 3)
+8) sv2.resize(IMAGE, (new_height, new_width))
+9) sv2.GaussianBlur(IMAGE, (param1, param2), param3)
+10) sv2.cvtColor(IMAGE, cv2.COLOR_###)
+    cv2.COLOR_### - выбирается из библиотеки cv2
+11) cv2.Canny(IMAGE, param1, param2)
+    param1, param2 - точность обнаружения границ (threshold). Чем меньше параметры, тем точнее
+12) cv2.dilate(IMAGE, kernel, iterations=1)
+    Толщина обводки
+    kernel - может быть задан как: kernel = numpy.ones((raws, columns), np.uint8)
+13 cv2.erode(IMAGE, kernel, iterations=1)
+
+
+Code:
+
+''' Image
+img = cv2.imread('images/Enot.jpeg')
+cv2.imshow('enot', img)
+cv2.waitKey(0)
+'''
+
+''' Video
+cap = cv2.VideoCapture('videos/hand.mp4')
+cap.set(3, 500)
+cap.set(4, 300)
+
+while True:
+    success, img = cap.read()
+    #if success:
+    cv2.imshow('Video', img)
+
+    if cv2.waitKey(30) & 0xFF == ord('q'):
+        break
+'''
+
+img = cv2.imread('images/Enot.jpeg')
+new_img = cv2.resize(img, (img.shape[1]//2, img.shape[0]//2))
+new_img = cv2.GaussianBlur(new_img, (9,9), 0)
+new_img = cv2.cvtColor(new_img, cv2.COLOR_BGR2GRAY)
+cv2.imshow('enot', new_img)
+#cv2.imshow('enot', new_img[0:300, 0:150]) Обрезаем картинку
+print(new_img.shape)
+cv2.waitKey(0)

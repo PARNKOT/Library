@@ -1,0 +1,6 @@
+helloworld.c
+setup.py
+test_cython.egg-info/PKG-INFO
+test_cython.egg-info/SOURCES.txt
+test_cython.egg-info/dependency_links.txt
+test_cython.egg-info/top_level.txt
