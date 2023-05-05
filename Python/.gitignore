@@ -1,2 +1,4 @@
 Extensions/Python
 db.sqlite3
+Test/*
+Test/
