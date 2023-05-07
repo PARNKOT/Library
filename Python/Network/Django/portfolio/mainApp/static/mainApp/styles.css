@@ -40,3 +40,13 @@ li a {
     justify-content: center;
     padding: 20px;
 }
+
+.biography .content {
+  display: flex;
+  position: absolute;
+  top: 20px;
+  right: 100px;
+  background-color: rgba(216, 213, 212, 0.5);
+  width: 60%;
+  height: 95%;
+}

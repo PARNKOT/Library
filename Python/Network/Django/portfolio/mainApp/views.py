@@ -14,6 +14,7 @@ Welcome to my portfolio!<br>
 
 
 def index(request):
+    #return render(request, "mainApp/index3.html")
     return render(request, "mainApp/title.html", context={"biography": biography})
 
 
