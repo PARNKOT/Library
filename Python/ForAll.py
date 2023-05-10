@@ -1,133 +1,78 @@
-#!/usr/bin/env python
-"""
-   Tracking of rotating point.
-   Rotation speed is constant.
-   Both state and measurements vectors are 1D (a point angle),
-   Measurement is the real point angle + gaussian noise.
-   The real and the estimated points are connected with yellow line segment,
-   the real and the measured points are connected with red line segment.
-   (if Kalman filter works correctly,
-    the yellow segment should be shorter than the red one).
-   Pressing any key (except ESC) will reset the tracking with a different speed.
-   Pressing ESC will stop the program.
-"""
-# Python 2/3 compatibility
-import sys
-import matplotlib.pyplot as plt
-PY3 = sys.version_info[0] == 3
+from typing import List
+from functools import cache
 
-if PY3:
-    long = int
 
-import cv2
-from math import cos, sin, sqrt
-import numpy as np
+class Solution:
+    FOUND = 0
+
+    def rootCount(self, edges: List[List[int]], guesses: List[List[int]], k: int) -> int:
+        roots = set()
+        self.edges = edges
+        self.guesses = guesses
+        self.guesses_length = len(guesses)
+
+        for left, right in edges:
+            roots.add(left)
+            roots.add(right)
+
+        ans = 0
+
+        for root in roots:
+            found_count = 0
+            self.dfs_find(root, None)
+
+            if self.FOUND >= k:
+                ans += 1
+
+            self.FOUND = 0
+
+        return ans
+
+    #@cache
+    def dfs_find(self, root, parent):
+        if self.FOUND == self.guesses_length:
+            return
+
+        next_level = []
+
+        for edge in self.edges:
+            if root in edge:
+                second_val = edge[1 - edge.index(root)]
+                if parent is None or second_val != parent:
+                    next_level.append(second_val)
+
+        for node in next_level:
+            for guess in self.guesses:
+                if guess[0] == root and guess[1] == node:
+                    self.FOUND += 1
+
+        for node in next_level:
+            self.dfs_find(node, root)
+
+
+def dfs_edges(edges: list, root, parent):
+    print(root)
+    next_level = []
+
+    for edge in edges:
+        if root in edge:
+            second_val = edge[1 - edge.index(root)]
+            if parent is None or second_val != parent:
+                next_level.append(edge[1 - edge.index(root)])
+
+    for node in next_level:
+        dfs_edges(edges, node, root)
+
 
 if __name__ == "__main__":
+    # edges = [[0, 1], [1, 2], [1, 3], [4, 2]]
+    # guesses = [[1, 3], [0, 1], [1, 0], [2, 4]]
+    # k = 3
 
-    img_height = 500
-    img_width = 500
-    kalman = cv2.KalmanFilter(2, 1, 0)
+    edges = [[0, 1], [1, 2], [2, 3], [3, 4]]
+    guesses = [[1, 0], [3, 4], [2, 1], [3, 2]]
+    k = 1
 
-    code = long(-1)
+    #dfs_edges(edges, 4, None)
 
-    cv2.namedWindow("Kalman")
-
-    x_true = []
-    y_true = []
-    angle_true = []
-
-    x_predict = []
-    y_predict = []
-    angle_predict = []
-
-    x_measure = []
-    y_measure = []
-    angle_measure = []
-
-    while True:
-        state = 0.1 * np.random.randn(2, 1)
-
-        kalman.transitionMatrix = np.array([[1., 0.], [0., 1.]])
-        kalman.measurementMatrix = 1. * np.ones((1, 2))
-        kalman.processNoiseCov = 1e-4 * np.eye(2)
-        kalman.measurementNoiseCov = 0.0 * np.ones((1, 1))
-        kalman.errorCovPost = 1. * np.ones((2, 2))
-        kalman.statePost = 0.1 * np.random.randn(2, 1)
-
-        while True:
-            def calc_point(angle):
-                return (np.around(img_width/2 + img_width/3*cos(angle), 0).astype(int),
-                        np.around(img_height/2 - img_width/3*sin(angle), 1).astype(int))
-
-            state_angle = state[0, 0]
-
-            x_true.append(state[0])
-            y_true.append(state[1])
-            angle_true.append(state_angle)
-
-            state_pt = calc_point(state_angle)
-
-            prediction = kalman.predict()
-            predict_angle = prediction[0, 0]
-
-            x_predict.append(prediction[0])
-            y_predict.append(prediction[1])
-            angle_predict.append(predict_angle)
-
-            predict_pt = calc_point(predict_angle)
-
-            measurement = kalman.measurementNoiseCov * np.random.randn(1, 1)
-
-            # generate measurement
-            measurement = np.dot(kalman.measurementMatrix, state) + measurement
-
-            measurement_angle = measurement[0, 0]
-            #x_measure.append(measurement[0])
-            #y_measure.append(measurement[1])
-            angle_measure.append(measurement_angle)
-            measurement_pt = calc_point(measurement_angle)
-
-            # plot points
-            def draw_cross(center, color, d):
-                cv2.line(img,
-                         (center[0] - d, center[1] - d), (center[0] + d, center[1] + d),
-                         color, 1, cv2.LINE_AA, 0)
-                cv2.line(img,
-                         (center[0] + d, center[1] - d), (center[0] - d, center[1] + d),
-                         color, 1, cv2.LINE_AA, 0)
-
-            img = np.zeros((img_height, img_width, 3), np.uint8)
-            draw_cross(np.int32(state_pt), (255, 255, 255), 3)
-            draw_cross(np.int32(measurement_pt), (0, 0, 255), 3)
-            draw_cross(np.int32(predict_pt), (0, 255, 0), 3)
-
-            cv2.line(img, state_pt, measurement_pt, (0, 0, 255), 3, cv2.LINE_AA, 0)
-            cv2.line(img, state_pt, predict_pt, (0, 255, 255), 3, cv2.LINE_AA, 0)
-
-            kalman.correct(measurement)
-
-            process_noise = sqrt(kalman.processNoiseCov[0,0]) * np.random.randn(2, 1)
-            state = np.dot(kalman.transitionMatrix, state) + process_noise
-
-            cv2.imshow("Kalman", img)
-
-            code = cv2.waitKey(10)
-            if code != -1:
-                break
-
-        if code in [27, ord('q'), ord('Q')]:
-            break
-
-    cv2.destroyWindow("Kalman")
-
-    fig, axis = plt.subplots(2, 1)
-    #axis[0].plot(range(len(angle_true)), [angle_true[i] - angle_predict[i] for i in range(len(angle_true))])
-    axis[0].plot(range(len(x_true)), angle_true)
-    axis[0].plot(range(len(x_true)), angle_predict)
-    axis[0].plot(range(len(x_true)), angle_measure)
-    axis[0].legend(("True", "Predict", "Measurement"))
-    axis[1].plot(range(len(angle_true)), [angle_true[i] - angle_predict[i] for i in range(len(angle_true))])
-    #axis[1].plot(range(len(x_true)), x_true, x_predict)
-    #axis[2].plot(range(len(y_true)), y_true, y_predict)
-    plt.show()
+    print(Solution().rootCount(edges, guesses, k))
