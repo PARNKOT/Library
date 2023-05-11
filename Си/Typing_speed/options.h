@@ -1,4 +1,5 @@
 #pragma once
+
 #define OPTIONS_COUNT 1
 
 void parseOptions(int argc, char** argv);
