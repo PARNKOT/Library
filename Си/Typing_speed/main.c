@@ -8,6 +8,7 @@
 void mainLoop();
 void compareStrings(char* s1, char* s2);
 int compareWords(char *word1, char *word2);
+char* getOsName();
 
 
 Option options[OPTIONS_COUNT] = {
@@ -73,8 +74,8 @@ void mainLoop() {
 
         start = time(NULL);
 
-        scanf("%[^\n]%*c", user_line);
-
+        //scanf("%[^\n]%*c", user_line);
+        gets(user_line);
         diff = (time(NULL) - start); // time difference in ms
 
         compareStrings(file_line, user_line);
@@ -89,6 +90,7 @@ void mainLoop() {
 }
 
 
+#ifdef __linux__ || __unix || __unix__
 void compareStrings(char* base, char* s) {
     char *word1, *word2;
     char *last1, *last2;
@@ -112,6 +114,62 @@ void compareStrings(char* base, char* s) {
 
     printf("Percent: %i %% \n", matches*100/(sum_length-1));
 }
+#elif _WIN32 || _WIN64
+// char* strtok_s(char* s, char *delim, char** last) {
+//     if (s) {
+//         int count = 0;
+
+//         while(*s != *delim) {
+//             count ++;
+//         }
+
+//         return
+//     }
+    
+//     if (*s == '\0') {
+//         return NULL;
+//     }
+// }
+
+// int strtok_my(char **s, char delim) {
+//     while(**s != delim) {
+//         if (**s == '\0') {
+//             return 0;
+//         }
+
+//         ++(*s);
+//     }
+
+//     return 1;
+// }
+
+void compareStrings(char* base, char* s) {
+    char *word1, *word2;
+    char *last1, *last2;
+    int matches = 0;
+    int sum_length = 0;
+    
+    word1 = __strtok_r(base, " ,", &last1);
+    word2 = __strtok_r(s, " ,", &last2);
+    while( word1 != NULL && word2 != NULL ) {
+        sum_length += strlen(word1);
+        matches += compareWords(word1, word2);
+
+        word1 = __strtok_r(NULL, " ", &last1);
+        word2 = __strtok_r(NULL, " ", &last2);
+    }
+
+    while(word1 != NULL) {
+        sum_length += strlen(word1) - 1;
+        word1 = __strtok_r(NULL, " ", &last1);
+    }
+
+    printf("Percent: %i %% \n", matches*100/(sum_length-1));
+}
+
+#endif
+
+
 
 int compareWords(char *word1, char *word2) {
     int count_matches = 0;
@@ -123,8 +181,4 @@ int compareWords(char *word1, char *word2) {
     }
 
     return count_matches;
-}
-
-int calcPercent(char* str, int matches) {
-
 }
