@@ -130,31 +130,31 @@ Metrics readUserStringAndCalcMetrics(char* str_to_repeat, size_t length) {
 
 #if __linux__ || __unix || __unux__
 
-// int compareStrings(char* base, char* s) {
-//     char *word1, *word2;
-//     char *last1, *last2;
-//     int matches = 0;
-//     int sum_length = 0;
+int compareStrings(char* base, char* s) {
+    char *word1, *word2;
+    char *last1, *last2;
+    int matches = 0;
+    int sum_length = 0;
 
-//     word1 = __strtok_r(base, " ,", &last1);
-//     word2 = __strtok_r(s, " ,", &last2);
-//     while( word1 != NULL && word2 != NULL ) {
-//         sum_length += strlen(word1);
-//         matches += compareWords(word1, word2);
+    word1 = __strtok_r(base, " ,", &last1);
+    word2 = __strtok_r(s, " ,", &last2);
+    while( word1 != NULL && word2 != NULL ) {
+        sum_length += strlen(word1);
+        matches += compareWords(word1, word2);
 
-//         word1 = __strtok_r(NULL, " ", &last1);
-//         word2 = __strtok_r(NULL, " ", &last2);
-//     }
+        word1 = __strtok_r(NULL, " ", &last1);
+        word2 = __strtok_r(NULL, " ", &last2);
+    }
 
-//     while(word1 != NULL) {
-//         sum_length += strlen(word1) - 1;
-//         word1 = __strtok_r(NULL, " ", &last1);
-//     }
+    while(word1 != NULL) {
+        sum_length += strlen(word1) - 1;
+        word1 = __strtok_r(NULL, " ", &last1);
+    }
 
-//     return matches*100/(sum_length-1);
-// }
+    return matches*100/(sum_length-1);
+}
 
-// #elif _WIN32 || _WIN64
+#elif _WIN32 || _WIN64
 int compareStrings(char* base, char* s) {
     char *word1, *word2;
     int last1 = 0, last2 = 0;

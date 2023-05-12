@@ -60,7 +60,7 @@ char* strtok_my(char* str, char delim, int* start_pos) {
 
     token = (char*)malloc(sizeof(char)*(end_pos-(*start_pos) + 1));
     strncpy(token, str+(*start_pos), end_pos - (*start_pos));
-    *(token + (end_pos-(*start_pos) + 1)) = '\0';
+    *(token + (end_pos-(*start_pos))) = '\0';
 
     *start_pos = end_pos;
 
