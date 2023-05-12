@@ -1,14 +1,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
+//#include <time.h>
+#include <sys/time.h>
 #include "options.h"
 
 
 void mainLoop();
 void compareStrings(char* s1, char* s2);
 int compareWords(char *word1, char *word2);
-char* getOsName();
 
 
 Option options[OPTIONS_COUNT] = {
@@ -32,20 +32,14 @@ void print_file(FILE *file) {
 }
 
 int main(int argc, char** argv) {
-
     parseOptions(argc, argv);
     
     if (file = fopen(getOption("-f"), "r")) {
-        //print_file(file);
         mainLoop();
         fclose(file);
     } else {
         perror("Couldn't open file");
     }
-
-    //char str1[] = "My name is Egor";
-    //char str2[] = "My name is Sonya";
-    //compareStrings(str1, str2);
 
     return 0;
 }
@@ -55,7 +49,8 @@ void mainLoop() {
     char *file_line = NULL;
     char *user_line = NULL;
 
-    time_t start, diff;
+    struct timeval tv_start, tv_end;
+    long seconds, micros;
 
     size_t previous_len = 0,
            current_len = 0;
@@ -63,7 +58,7 @@ void mainLoop() {
     while(getline(&file_line, &current_len, file) != -1) {
         if (user_line && (current_len == previous_len)) {
             user_line = (char*)realloc(user_line, sizeof(char)*current_len);
-        } else {
+        } else if (!user_line) {
             user_line = (char*)malloc(sizeof(char)*current_len);
         }
         previous_len = current_len;
@@ -72,14 +67,18 @@ void mainLoop() {
         printf("-> %s", file_line);
         printf("Your turn:\n");
 
-        start = time(NULL);
+        gettimeofday(&tv_start, NULL);
 
-        //scanf("%[^\n]%*c", user_line);
-        gets(user_line);
-        diff = (time(NULL) - start); // time difference in ms
+        scanf("%[^\n]%*c", user_line);
+
+        gettimeofday(&tv_end, NULL);
+        diff = tv_end.tv_sec + 
+        long seconds = (tv_end.tv_sec - tv_start.tv_sec);
+        long micros = ((seconds * 1000000) + tv_end.tv_usec) - (tv_start.tv_usec);
 
         compareStrings(file_line, user_line);
-        printf("Time: %ld ms\n", diff);
+        //printf("Time: %ld s %ld ms\n", seconds, micros);
+        printf("Time: %ld ms\n", micros/1000);
         
         #ifdef DEBUG
         printf("-> %s\n", user_line);
@@ -87,10 +86,15 @@ void mainLoop() {
         
         printf("==============================================\n");
     }
+
+    if (file_line) {
+        free(file_line);
+    }
 }
 
 
-#ifdef __linux__ || __unix || __unix__
+#if __linux__ || __unix || __unux__
+
 void compareStrings(char* base, char* s) {
     char *word1, *word2;
     char *last1, *last2;
@@ -114,6 +118,7 @@ void compareStrings(char* base, char* s) {
 
     printf("Percent: %i %% \n", matches*100/(sum_length-1));
 }
+
 #elif _WIN32 || _WIN64
 // char* strtok_s(char* s, char *delim, char** last) {
 //     if (s) {
