@@ -1,11 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-//#include <time.h>
-#include <sys/time.h>
+
+#ifdef __linux__
+    #include <sys/time.h>
+#elif _WIN32 || _WIN64
+    #include <windows.h>
+#endif
+
 #include "options.h"
 #include "utils.h"
-
+//struct timeval {};
 
 typedef struct {
     int percent;
@@ -70,10 +75,6 @@ int main(int argc, char** argv) {
 void mainLoop() {
     char *file_line = NULL;
     char *user_line = NULL;
-
-    int percent;
-    struct timeval tv_start, tv_end;
-    long seconds, ms;
     
     int total_percent = 0;
     long total_time_ms = 0;
@@ -107,7 +108,7 @@ void mainLoop() {
     }
 }
 
-Metrics readUserStringAndCalcMetrics(char* str_to_repeat, size_t length) {
+Metrics readUserStringAndCalcMetrics(char* str_to_repeat, const size_t length) {
     char user_line[length];
     Metrics metrics;
 
